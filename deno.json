@@ -10,6 +10,9 @@
     "update": "deno run -A -r https://fresh.deno.dev/update .",
     "build-workers": "deno run -A workers/_build.ts"
   },
+  "test": {
+    "include": ["./lib"]
+  },
   "lint": {
     "rules": {
       "tags": [
@@ -39,7 +42,8 @@
     "dexie": "https://esm.sh/dexie@3.2.6",
     "dexie-react-hooks": "https://esm.sh/dexie-react-hooks@1.1.7?alias=react:preact/compat",
     "prism-json": "https://esm.sh/prismjs@1.29.0/components/prism-json?no-check",
-    "prismjs": "https://esm.sh/prismjs@1.29.0"
+    "prismjs": "https://esm.sh/prismjs@1.29.0",
+    "ipaddr.js": "https://esm.sh/ipaddr.js@2.1.0"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

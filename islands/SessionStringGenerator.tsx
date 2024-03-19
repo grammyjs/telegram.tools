@@ -1,79 +1,74 @@
-import { useSignal } from "@preact/signals";
+import { Client, DEVICE_MODEL, StorageMemory } from "mtkruto/mod.ts";
+import { signal } from "@preact/signals";
 import { Button } from "../components/Button.tsx";
 import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
 import { Label } from "../components/Label.tsx";
 import { Select } from "../components/Select.tsx";
 import { Error, error } from "./Error.tsx";
+import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
+import {
+  serializeGramJS,
+  serializePyrogram,
+  serializeTelethon,
+} from "../lib/session_string.tsx";
+import { UNREACHABLE } from "mtkruto/1_utilities.ts";
+import { Spinner2 } from "../components/icons/Spinner.tsx";
+import { storedString } from "../lib/stored_signals.tsx";
 
-/*
+const sessionString = signal("");
+const loading = signal(false);
 
-
-pyrogram
-+------+----------+------------+
-| Size |   Type   |   Content  |
-+------+----------+------------+
-|    1 |  uint8   |  dc_id     |
-|    4 |  uint32  |  api_id    |
-|    1 |  boolean |  test_mode |
-|  255 |  bytes   |  auth_key  |
-|    8 |  uint64  |  user_id   |
-|    1 |  boolean |  is_bot    |
-+------+----------+------------+
-
-+-----------------------------------+
-| base64 urlsafe encode, strip =    |
-+-----------------------------------+
-
-------------
-
-telethon
-
-+---------+------------------+-----------+
-| Size    | Type             | Content   |
-+---------+------------------+-----------+
-| 1       | constant 0x01    |  version  |
-| 1       | uint8            | dc_id     |
-| 4 or 16 | IPv4/IPv6 octets | ip        |
-| 2       | uint16           | port      |
-| 255     | bytes            | auth_key  |
-+---------+------------------+-----------+
-
-
-------------
-
-
-gramjs
-
-+---------+------------------+-----------+
-| Size    | Type             | Content   |
-+---------+------------------+-----------+
-| 1       | constant 0x01    |  version  |
-| 1       | uint8            | dc_id     |
-| 2       | uint16           | ip_length |
-| 4 or 16 | IPv4/IPv6 octets | ip        |
-| 2       | uint16           | port      |
-| 255     | bytes            | auth_key  |
-+---------+------------------+-----------+
-
-+---------------------------------------+
-|       base64 (urlsafe?) encode        |
-+---------------------------------------+
-
-***/
+const apiId = storedString("", "string-session-generator_apiId");
+const apiHash = storedString("", "string-session-generator_apiHash");
+const environment = signal<"Production" | "Test">("Production");
+const accountType = signal<"Bot" | "User">("Bot");
+const account = signal("");
+const library = signal<
+  | "Telethon"
+  | "Pyrogram"
+  | "GramJS"
+  | "mtcute"
+  | "MTKruto"
+>("Telethon");
 
 export function SessionStringGenerator() {
-  const environment = useSignal<"Production" | "Test">("Production");
-  const accountType = useSignal<"Bot" | "User">("Bot");
-  const library = useSignal<
-    | "Telethon"
-    | "Pyrogram"
-    | "GramJS"
-    | "Grammers"
-    | "mtcute"
-    | "MTKruto"
-  >("Telethon");
-
+  if (loading.value) {
+    return (
+      <div class="gap-1.5 text-xs opacity-50 flex w-full items-center justify-center max-w-lg mx-auto">
+        <Spinner2 size={10} /> <span>Generating session string</span>
+      </div>
+    );
+  }
+  if (sessionString.value) {
+    return (
+      <>
+        <div class="gap-4 flex flex-col w-full max-w-lg mx-auto">
+          <div>
+            <button
+              class="text-grammy"
+              onClick={() => sessionString.value = ""}
+            >
+              ← Back
+            </button>
+          </div>
+          <div class="bg-border rounded-xl p-3 text-sm font-mono break-all select-text">
+            {sessionString.value}
+          </div>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(sessionString.value).then(() => {
+                error.value = "Copied to clipboard.";
+              });
+            }}
+          >
+            Copy
+          </Button>
+        </div>
+        <Error />
+      </>
+    );
+  }
   return (
     <>
       <div class="gap-4 flex flex-col w-full max-w-lg mx-auto">
@@ -93,8 +88,20 @@ export function SessionStringGenerator() {
           <Caption>
             App Credentials
           </Caption>
-          <Input placeholder="API ID" name="token" required />
-          <Input placeholder="API hash" name="token" required />
+          <Input
+            placeholder="API ID"
+            name="token"
+            required
+            value={apiId.value}
+            onChange={(e) => apiId.value = e.currentTarget.value}
+          />
+          <Input
+            placeholder="API hash"
+            name="token"
+            required
+            value={apiHash.value}
+            onChange={(e) => apiHash.value = e.currentTarget.value}
+          />
         </Label>
         <Label>
           <Caption>
@@ -105,7 +112,6 @@ export function SessionStringGenerator() {
               "Telethon",
               "Pyrogram",
               "GramJS",
-              "Grammers",
               "mtcute",
               "MTKruto",
             ]}
@@ -130,20 +136,17 @@ export function SessionStringGenerator() {
             placeholder={accountType.value == "Bot"
               ? "Bot token"
               : "Phone number in international format"}
+            value={account.value}
+            onChange={(e) => account.value = e.currentTarget.value}
           />
         </Label>
         <Label>
           <Button
             onClick={() => {
-              if (library.value != "MTKruto") {
-                error.value = "The chosen library is currently not supported.";
-                return;
-              }
-              if (accountType.value != "Bot") {
-                error.value =
-                  "The chosen account type is currently not supported.";
-                return;
-              }
+              loading.value = true;
+              generateSessionString().finally(() => {
+                loading.value = false;
+              });
             }}
           >
             Next
@@ -157,4 +160,63 @@ export function SessionStringGenerator() {
       <Error />
     </>
   );
+}
+
+async function generateSessionString() {
+  if (accountType.value != "Bot") {
+    error.value = "The chosen account type is currently not supported.";
+    return;
+  }
+
+  const apiId_ = Number(apiId.value);
+  const apiHash_ = apiHash.value;
+  const account_ = account.value;
+  if (isNaN(apiId_) || !apiId_ || !apiHash_) {
+    error.value = "Invalid API credentials.";
+    return;
+  }
+  if (!account_) {
+    error.value = "Invalid account details.";
+    return;
+  }
+
+  const client = new Client(new StorageMemory(), apiId_, apiHash_, {
+    deviceModel: navigator.userAgent.trim().split(" ")[0] || "Unknown",
+  });
+  await client.start(account_);
+
+  const dc = await client.storage.getDc();
+  const authKey = await client.storage.getAuthKey();
+  if (!dc || !authKey) {
+    UNREACHABLE();
+  }
+
+  const ip = getDcIps(dc, "ipv4")[0]; // TODO
+  const dcId = Number(dc.split("-")[0]);
+
+  switch (library.value) {
+    case "Telethon":
+      sessionString.value = serializeTelethon(dcId, ip, 80, authKey);
+      break;
+    case "Pyrogram": {
+      const me = await client.getMe();
+      sessionString.value = serializePyrogram(
+        dcId,
+        apiId_,
+        environment.value == "Test" ? true : false,
+        authKey,
+        me.id,
+        me.isBot,
+      );
+      break;
+    }
+    case "GramJS":
+      sessionString.value = serializeGramJS(dcId, ip, 80, authKey);
+      break;
+    case "MTKruto":
+      sessionString.value = await client.exportAuthString();
+      break;
+    default:
+      error.value = "The chosen library is currently not supported.";
+  }
 }

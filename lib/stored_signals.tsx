@@ -14,3 +14,13 @@ export function storedBoolean(defaultValue: boolean, key: string) {
   });
   return signal_;
 }
+
+export function storedString(defaultValue: string, key: string) {
+  const signal_ = signal(
+    IS_BROWSER ? localStorage.getItem(key) ?? "" : defaultValue,
+  );
+  IS_BROWSER && signal_.subscribe((v) => {
+    localStorage.setItem(key, v);
+  });
+  return signal_;
+}
