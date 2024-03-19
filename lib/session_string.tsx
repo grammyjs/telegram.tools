@@ -116,3 +116,54 @@ export function serializePyrogram(
   writer.write(new Uint8Array([isBot ? 1 : 0]));
   return base64EncodeUrlSafe(writer.buffer).replace(/(=+)$/, "");
 }
+
+/**
+ * Serialize an mtcute session string.
+ *
+ * +--------+------------+------------+
+ * |  Size  |    Type    |  Content   |
+ * +--------+------------+------------+
+ * | 1      | 0x03 const | version    |
+ * | 4      | int32 LE   | flags      |
+ * | 1      | 0x01 const | dc_version |
+ * | 1      | uint8      | dc_id      |
+ * | 1      | uint8      | dc_flags   |
+ * | varies | TL string  | dc_ip      |
+ * | 4      | int32 LE   | dc_port    |
+ * | 8      | int64 LE   | user_id    |
+ * | 1      | boolean    | is_bot     |
+ * | 256    | bytes      | auth_key   |
+ * +--------+------------+------------+
+ *
+ * Encoded in URL-safe Base64, with the "=" at its end trimmed.
+ */
+export function serializeMtcute(
+  testMode: boolean,
+  dcId: number,
+  ip: string,
+  port: number,
+  userId: number,
+  isBot: boolean,
+  authKey: Uint8Array,
+) {
+  const writer = new TLRawWriter();
+  writer.write(new Uint8Array([0x03])); // version
+  writer.writeInt32(
+    MTCUTE_HAS_SELF_FLAG | (testMode ? MTCUTE_TEST_MODE_FLAG : 0),
+  ); // flags
+
+  writer.write(new Uint8Array([0x01])); // dc_version
+  writer.write(new Uint8Array([dcId])); // dc_id
+  writer.writeInt32(ip.includes(":") ? MTCUTE_IPV6_FLAG : 0); // dc_flags
+  writer.writeString(ip); // dc_ip
+  writer.writeInt32(port); // dc_port
+
+  writer.writeInt64(BigInt(userId)); // user_id
+  writer.write(new Uint8Array([isBot ? 1 : 0])); // is_bot
+  writer.write(authKey); // authKey
+
+  return base64EncodeUrlSafe(writer.buffer);
+}
+const MTCUTE_HAS_SELF_FLAG = 1;
+const MTCUTE_TEST_MODE_FLAG = 2; // TODO: flag 4?
+const MTCUTE_IPV6_FLAG = 1;

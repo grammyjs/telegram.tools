@@ -1,4 +1,4 @@
-import { Client, DEVICE_MODEL, StorageMemory } from "mtkruto/mod.ts";
+import { Client, StorageMemory } from "mtkruto/mod.ts";
 import { signal } from "@preact/signals";
 import { Button } from "../components/Button.tsx";
 import { Caption } from "../components/Caption.tsx";
@@ -9,6 +9,7 @@ import { Error, error } from "./Error.tsx";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 import {
   serializeGramJS,
+  serializeMtcute,
   serializePyrogram,
   serializeTelethon,
 } from "../lib/session_string.tsx";
@@ -30,7 +31,7 @@ const library = signal<
   | "GramJS"
   | "mtcute"
   | "MTKruto"
->("Telethon");
+>("Telethon"); // TODO: url-based
 
 export function SessionStringGenerator() {
   if (loading.value) {
@@ -193,6 +194,7 @@ async function generateSessionString() {
 
   const ip = getDcIps(dc, "ipv4")[0]; // TODO
   const dcId = Number(dc.split("-")[0]);
+  const testMode = environment.value == "Test" ? true : false;
 
   switch (library.value) {
     case "Telethon":
@@ -203,7 +205,7 @@ async function generateSessionString() {
       sessionString.value = serializePyrogram(
         dcId,
         apiId_,
-        environment.value == "Test" ? true : false,
+        testMode,
         authKey,
         me.id,
         me.isBot,
@@ -213,6 +215,19 @@ async function generateSessionString() {
     case "GramJS":
       sessionString.value = serializeGramJS(dcId, ip, 80, authKey);
       break;
+    case "mtcute": {
+      const me = await client.getMe();
+      sessionString.value = serializeMtcute(
+        testMode,
+        dcId,
+        ip,
+        80,
+        me.id,
+        me.isBot,
+        authKey,
+      ); // TODO: tests
+      return;
+    }
     case "MTKruto":
       sessionString.value = await client.exportAuthString();
       break;
