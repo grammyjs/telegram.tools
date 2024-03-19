@@ -5,6 +5,8 @@ import { Db } from "../lib/update_explorer_db.ts";
 
 addEventListener("message", async (e) => {
   const bot = new Bot(e.data);
+  // deno-lint-ignore no-explicit-any
+  (globalThis as any).bot = bot; // for debugging
   const db = new Db(e.data);
   const startedAt = Date.now();
   try {
@@ -24,7 +26,7 @@ addEventListener("message", async (e) => {
     postMessage({ _: "error", error });
     return;
   }
-  bot.use((ctx) => {
+  bot.use((ctx, next) => {
     db.updates.put({
       updateId: ctx.update.update_id,
       data: ctx.update,
@@ -32,6 +34,7 @@ addEventListener("message", async (e) => {
     if (!ctx.msg?.date || ctx.msg.date <= startedAt) {
       postMessage({ _: "sound" });
     }
+    return next(); // allow handlers added by the user
   });
   bot.start();
 }, { once: true });
