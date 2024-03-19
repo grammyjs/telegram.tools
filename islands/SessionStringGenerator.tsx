@@ -16,7 +16,11 @@ import {
 import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { storedString } from "../lib/stored_signals.tsx";
+import { Router } from "../components/Router.tsx";
+import { getHashSignal } from "../lib/hash_signal.ts";
+import { IS_BROWSER } from "$fresh/runtime.ts";
 
+const hash = getHashSignal();
 const sessionString = signal("");
 const loading = signal(false);
 
@@ -25,15 +29,50 @@ const apiHash = storedString("", "string-session-generator_apiHash");
 const environment = signal<"Production" | "Test">("Production");
 const accountType = signal<"Bot" | "User">("Bot");
 const account = signal("");
-const library = signal<
-  | "Telethon"
-  | "Pyrogram"
-  | "GramJS"
-  | "mtcute"
-  | "MTKruto"
->("Telethon"); // TODO: url-based
 
+const validLibraries = [
+  "telethon",
+  "pyrogram",
+  "gramjs",
+  "mtcute",
+  "mtkruto",
+] as const;
+type ValidLibrary = (typeof validLibraries)[number];
+function isValidLibrary(string: string): string is ValidLibrary {
+  return validLibraries.includes(string as unknown as ValidLibrary);
+}
+
+const libraries = [
+  {
+    name: "Telethon",
+    link: ["telethon.dev", "https://telethon.dev"],
+  },
+  {
+    name: "Pyrogram",
+    link: ["pyrogram.org", "https://pyrogram.org"],
+  },
+  {
+    name: "GramJS",
+    link: ["gram.js.org", "https://gram.js.org"],
+  },
+  {
+    name: "mtcute",
+    link: ["mtcute.dev", "https://mtcute.dev"],
+  },
+  {
+    name: "MTKruto",
+    link: ["mtkru.to", "https://mtkru.to"],
+  },
+];
 export function SessionStringGenerator() {
+  if (!IS_BROWSER) {
+    return null;
+  }
+  const library = hash.value.toLowerCase().slice(1);
+  if (!isValidLibrary(library)) {
+    return <PickLibrary />;
+  }
+
   if (loading.value) {
     return (
       <div class="gap-1.5 text-xs opacity-50 flex w-full items-center justify-center max-w-lg mx-auto">
@@ -106,21 +145,6 @@ export function SessionStringGenerator() {
         </Label>
         <Label>
           <Caption>
-            Library
-          </Caption>
-          <Select
-            values={[
-              "Telethon",
-              "Pyrogram",
-              "GramJS",
-              "mtcute",
-              "MTKruto",
-            ]}
-            onChange={(v) => library.value = v}
-          />
-        </Label>
-        <Label>
-          <Caption>
             Account Type
           </Caption>
           <Select
@@ -145,7 +169,7 @@ export function SessionStringGenerator() {
           <Button
             onClick={() => {
               loading.value = true;
-              generateSessionString().finally(() => {
+              generateSessionString(library).finally(() => {
                 loading.value = false;
               });
             }}
@@ -163,7 +187,31 @@ export function SessionStringGenerator() {
   );
 }
 
-async function generateSessionString() {
+function PickLibrary() {
+  return (
+    <div class="gap-4 flex flex-col w-full max-w-sm mx-auto">
+      <div class="text-xl font-bold">Which library do you use?</div>
+      {libraries.map((v) => (
+        <button
+          class="bg-gradient py-3 px-4 rounded-xl border-border border-2 cursor-pointer flex flex-col items-start justify-center"
+          onClick={() => location.hash = `#${v.name.toLowerCase()}`}
+        >
+          <span class="text-lg">{v.name}</span>
+          <a
+            class="opacity-50 text-xs"
+            href={v.link[1]}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {v.link[0]}
+          </a>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+async function generateSessionString(library: ValidLibrary) {
   if (accountType.value != "Bot") {
     error.value = "The chosen account type is currently not supported.";
     return;
@@ -196,11 +244,11 @@ async function generateSessionString() {
   const dcId = Number(dc.split("-")[0]);
   const testMode = environment.value == "Test" ? true : false;
 
-  switch (library.value) {
-    case "Telethon":
+  switch (library) {
+    case "telethon":
       sessionString.value = serializeTelethon(dcId, ip, 80, authKey);
       break;
-    case "Pyrogram": {
+    case "pyrogram": {
       const me = await client.getMe();
       sessionString.value = serializePyrogram(
         dcId,
@@ -212,7 +260,7 @@ async function generateSessionString() {
       );
       break;
     }
-    case "GramJS":
+    case "gramjs":
       sessionString.value = serializeGramJS(dcId, ip, 80, authKey);
       break;
     case "mtcute": {
@@ -228,7 +276,7 @@ async function generateSessionString() {
       ); // TODO: tests
       return;
     }
-    case "MTKruto":
+    case "mtkruto":
       sessionString.value = await client.exportAuthString();
       break;
     default:
