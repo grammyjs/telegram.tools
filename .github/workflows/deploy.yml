@@ -1,0 +1,23 @@
+name: Deploy
+
+on: push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v1
+
+      - run: deno task build
+
+      - uses: denoland/deployctl@v1
+        with:
+          project: durov
+          entrypoint: main.ts

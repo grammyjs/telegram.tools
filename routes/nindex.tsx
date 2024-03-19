@@ -1,0 +1,138 @@
+import { Card } from "../components/Card.tsx";
+import { File } from "../components/icons/File.tsx";
+import { Code } from "../components/icons/Code.tsx";
+import { Filter } from "../components/icons/Filter.tsx";
+import { Radio } from "../components/icons/Radio.tsx";
+import { Webhook } from "../components/icons/Webhook.tsx";
+import { ExternalLink } from "../components/ExternalLink.tsx";
+import { Repeat } from "../components/icons/Repeat.tsx";
+import { FileText } from "../components/icons/FileText.tsx";
+import { Key } from "../components/icons/Key.tsx";
+
+const sections = [
+  {
+    name: "Unlisted",
+    description: "Tools that don’t fit in a specific section.",
+    tools: [
+      {
+        href: "/connectivity-test",
+        icon: <Radio />,
+        name: "Connectivity Test",
+        description:
+          "See if you are able to reach Telegram\u2019s data centers.",
+      },
+    ],
+  },
+  {
+    name: "Bot API",
+    description: (
+      <>
+        <ExternalLink href="https://core.telegram.org/bots/api">
+          Bot API
+        </ExternalLink>{" "}
+        is an official API for building Telegram bots.
+      </>
+    ),
+    tools: [
+      {
+        href: "/file-id-analyzer",
+        icon: <File />,
+        name: "File ID Analyzer",
+        description:
+          "Extract information from file IDs provided by Bot API or TDLib.",
+      },
+
+      {
+        href: "/update-explorer",
+        icon: <Code />,
+        name: "Update Explorer",
+        description: "Expore a bot\u2019s update stream live.",
+      },
+      {
+        href: "/webhook-manager",
+        icon: <Webhook />,
+        name: "Webhook Manager",
+        description: "Manage a bot\u2019s webhook settings.",
+      },
+    ],
+  },
+  {
+    name: "Session Strings",
+    description:
+      "Session strings are a piece of text generated or consumed by a \
+    third-party client library that include the necessary information to \
+    authorize as an account.",
+    tools: [
+      {
+        href: "/session-string-generator",
+        icon: <Key />,
+        name: "Session String Generator",
+        description:
+          "Generate a session string for your desired client library.",
+      },
+      {
+        href: "/webhook-manager",
+        icon: <Repeat />,
+        name: "Session String Converter",
+        description: "Convert between different known session string formats.",
+      },
+      {
+        href: "/webhook-manager",
+        icon: <FileText />,
+        name: "Session String Analyzer",
+        description: "Extract information from session strings.",
+      },
+    ],
+  },
+  {
+    name: "grammY",
+    description: (
+      <>
+        <ExternalLink href="https://grammy.dev">grammY</ExternalLink>{" "}
+        is a Bot API framework for TypeScript and JavaScript that can run almost
+        anywhere JavaScript does.
+      </>
+    ),
+    tools: [
+      {
+        href: "/filter-query-browser",
+        icon: <Filter />,
+        name: "Filter Query Browser",
+        description: "Browse through grammY\u2019s filter queries.",
+      },
+    ],
+  },
+];
+
+export default function Home() {
+  return (
+    <div class="flex flex-col w-full gap-10">
+      {sections.map((v) => (
+        <div class="flex flex-col gap-5">
+          <div class="flex flex-col gap-1.5">
+            <div class="text-2xl font-bold">{v.name}</div>
+            {v.description && <div>{v.description}</div>}
+          </div>
+          <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {v.tools.map((v) => (
+              <Card
+                href={v.href}
+                title={v.name}
+                description={v.description}
+                icon={v.icon}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+      {
+        /* <div class="text-xs opacity-50 flex flex-wrap lg:gap-5 items-ceter justify-between flex-reverse">
+        <div>
+          &copy; 2024 telegram.tools, te.legram.tools, te.legr.am
+        </div>
+        <div>Not affiliated with Telegram.</div>
+      </div> */
+      }
+    </div>
+  );
+}
