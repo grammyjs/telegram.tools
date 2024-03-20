@@ -16,7 +16,6 @@ import {
 import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { storedString } from "../lib/stored_signals.tsx";
-import { Router } from "../components/Router.tsx";
 import { getHashSignal } from "../lib/hash_signal.ts";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 

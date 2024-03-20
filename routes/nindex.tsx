@@ -7,6 +7,7 @@ import { Webhook } from "../components/icons/Webhook.tsx";
 import { ExternalLink } from "../components/ExternalLink.tsx";
 import { Repeat } from "../components/icons/Repeat.tsx";
 import { FileText } from "../components/icons/FileText.tsx";
+import { At } from "../components/icons/At.tsx";
 import { Key } from "../components/icons/Key.tsx";
 
 const sections = [
@@ -38,10 +39,18 @@ const sections = [
         href: "/file-id-analyzer",
         icon: <File />,
         name: "File ID Analyzer",
-        description:
-          "Extract information from file IDs provided by Bot API or TDLib.",
+        description: (
+          <>
+            Extract information from file&nbsp;IDs provided by Bot API or TDLib.
+          </>
+        ),
       },
-
+      {
+        href: "/inline-message-id-unpacker",
+        icon: <At />,
+        name: "Inline Message ID Unpacker",
+        description: "Unpack inline message IDs.",
+      },
       {
         href: "/update-explorer",
         icon: <Code />,

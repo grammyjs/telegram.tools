@@ -8,6 +8,7 @@ import * as $connectivity_test from "./routes/connectivity-test.tsx";
 import * as $file_id_analyzer from "./routes/file-id-analyzer.tsx";
 import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $inline_message_id_unpacker from "./routes/inline-message-id-unpacker.tsx";
 import * as $nindex from "./routes/nindex.tsx";
 import * as $session_string_generator from "./routes/session-string-generator.tsx";
 import * as $test from "./routes/test.tsx";
@@ -20,6 +21,7 @@ import * as $Dots from "./islands/Dots.tsx";
 import * as $Error from "./islands/Error.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
+import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
 import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringGenerator from "./islands/SessionStringGenerator.tsx";
 import * as $UpdateExplorer from "./islands/UpdateExplorer.tsx";
@@ -34,6 +36,7 @@ const manifest = {
     "./routes/file-id-analyzer.tsx": $file_id_analyzer,
     "./routes/filter-query-browser.tsx": $filter_query_browser,
     "./routes/index.tsx": $index,
+    "./routes/inline-message-id-unpacker.tsx": $inline_message_id_unpacker,
     "./routes/nindex.tsx": $nindex,
     "./routes/session-string-generator.tsx": $session_string_generator,
     "./routes/test.tsx": $test,
@@ -48,6 +51,7 @@ const manifest = {
     "./islands/Error.tsx": $Error,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
+    "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,
     "./islands/Select.tsx": $Select,
     "./islands/SessionStringGenerator.tsx": $SessionStringGenerator,
     "./islands/UpdateExplorer.tsx": $UpdateExplorer,
