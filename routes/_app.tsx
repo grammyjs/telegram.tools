@@ -23,7 +23,7 @@ export default function App({ Component, url }: PageProps) {
           {["/update-explorer", "/connectivity-test"].includes(url.pathname)
             ? <Component />
             : (
-              <main class="mx-auto w-full max-w-[900px] p-5 xl:(p-10) flex">
+              <main class="mx-auto w-full max-w-[900px] p-5 xl:(p-10) flex flex-col">
                 <Component />
               </main>
             )}

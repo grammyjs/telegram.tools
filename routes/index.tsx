@@ -117,26 +117,39 @@ const sections = [
 
 export default function Home() {
   return (
-    <div class="flex flex-col w-full gap-10">
-      {sections.map((v) => (
-        <div class="flex flex-col gap-5">
-          <div class="flex flex-col gap-1.5">
-            <div class="text-2xl font-bold">{v.name}</div>
-            {v.description && <div>{v.description}</div>}
+    <>
+      <div class="flex flex-col w-full gap-10">
+        {sections.map((v) => (
+          <div class="flex flex-col gap-5">
+            <div class="flex flex-col gap-1.5">
+              <div class="text-2xl font-bold">{v.name}</div>
+              {v.description && <div>{v.description}</div>}
+            </div>
+            <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {v.tools.map((v) => (
+                <Card
+                  href={v.href}
+                  title={v.name}
+                  description={v.description}
+                  icon={v.icon}
+                  disabled={"disabled" in v}
+                />
+              ))}
+            </div>
           </div>
-          <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {v.tools.map((v) => (
-              <Card
-                href={v.href}
-                title={v.name}
-                description={v.description}
-                icon={v.icon}
-                disabled={"disabled" in v}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      <footer class="text-xs py-10 flex gap-10 items-center justify-between flex-wrap">
+        <span class="opacity-50">
+          &copy; {new Date().getFullYear() > 2024 && "2024-"}
+          {new Date().getFullYear()}{" "}
+          grammyjs &middot; telegram.tools is not affiliated with Telegram.
+       
+        </span>
+        <a href="https://github.com/grammyjs/telegram.tools" target="_blank" class="text-grammy"> 
+          Source Code
+        </a>
+      </footer>
+    </>
   );
 }
