@@ -55,7 +55,7 @@ const sections = [
         href: "/update-explorer",
         icon: <Code />,
         name: "Update Explorer",
-        description: "Expore a bot\u2019s update stream live.",
+        description: "Explore a bot\u2019s update stream live.",
       },
       {
         href: "/webhook-manager",
