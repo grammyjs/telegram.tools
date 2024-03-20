@@ -193,9 +193,11 @@ function PickLibrary() {
       {libraries.map((v) => (
         <button
           class="bg-gradient py-3 px-4 rounded-xl border-border border-2 cursor-pointer flex flex-col items-start justify-center"
-          onClick={() => location.hash = `#${v.name.toLowerCase()}`}
+          onClick={(e) =>
+            e.currentTarget == e.target &&
+            (location.hash = `#${v.name.toLowerCase()}`)}
         >
-          <span class="text-lg">{v.name}</span>
+          <span class="text-lg pointer-events-none">{v.name}</span>
           <a
             class="opacity-50 text-xs"
             href={v.link[1]}
