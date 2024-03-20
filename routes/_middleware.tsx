@@ -1,6 +1,8 @@
 import { FreshContext } from "$fresh/server.ts";
 
-const HEADER = new TextEncoder().encode("<!--- See something wrong? Let us know in our chat: https://t.me/grammyjs --->");
+const HEADER = new TextEncoder().encode(
+  "<!--- See something wrong? Let us know in our chat: https://t.me/grammyjs --->",
+);
 
 export async function handler(req: Request, ctx: FreshContext) {
   try {
@@ -21,7 +23,6 @@ export async function handler(req: Request, ctx: FreshContext) {
             if (!headerSent) {
               headerSent = true;
               controller.enqueue(HEADER);
-              return;
             }
             controller.enqueue(result.value);
           } else if (!result) {
