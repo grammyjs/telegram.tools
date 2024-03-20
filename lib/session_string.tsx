@@ -238,31 +238,60 @@ export function deserializePyrogram(string: string): CommonSessionStringFormat {
  */
 export function serializeMtcute(
   testMode: boolean,
-  dcId: number,
-  ip: string,
-  port: number,
+  primaryDc: MtcuteDC,
+  mediaDc: MtcuteDC | null,
   userId: number,
   isBot: boolean,
   authKey: Uint8Array,
 ) {
   const writer = new TLRawWriter();
   writer.write(new Uint8Array([0x03])); // version
-  writer.writeInt32(
-    MTCUTE_HAS_SELF_FLAG | (testMode ? MTCUTE_TEST_MODE_FLAG : 0),
-  ); // flags
 
-  writer.write(new Uint8Array([0x01])); // dc_version
-  writer.writeBytes(new Uint8Array([dcId])); // dc_id
-  writer.writeInt32(ip.includes(":") ? MTCUTE_IPV6_FLAG : 0); // dc_flags
-  writer.writeString(ip); // dc_ip
-  writer.writeInt32(port); // dc_port
+  let flags = MTCUTE_HAS_SELF_FLAG;
+  if (mediaDc != null) {
+    flags |= MTCUTE_MEDIA_DC_FLAG;
+  }
+  if (testMode) {
+    flags |= MTCUTE_TEST_MODE_FLAG;
+  }
+  writer.writeInt32(flags); // flags
+
+  writer.writeBytes(serializeMtcuteDc(primaryDc));
+  if (mediaDc != null) {
+    writer.writeBytes(serializeMtcuteDc(mediaDc));
+  }
 
   writer.writeInt64(BigInt(userId)); // user_id
-  writer.write(new Uint8Array([isBot ? 1 : 0])); // is_bot
-  writer.write(authKey); // authKey
+  writer.writeInt32(isBot ? 0x997275b5 : 0xbc799737, false); // is_bot
+  writer.writeBytes(authKey); // authKey
 
   return base64EncodeUrlSafe(writer.buffer);
 }
+function serializeMtcuteDc(dc: MtcuteDC) {
+  const writer = new TLRawWriter();
+  writer.write(new Uint8Array([0x01])); // dc_version
+  writer.write(new Uint8Array([dc.id])); // dc_id
+  let flags = 0;
+  if (dc.ip.includes(":")) {
+    flags |= MTCUTE_DC_IPV6_FLAG;
+  }
+  if (dc.media) {
+    flags |= MTCUTE_DC_MEDIA_FLAG;
+  }
+  writer.write(new Uint8Array([flags])); // dc_flags
+  writer.writeString(dc.ip); // dc_ip
+  writer.writeInt32(dc.port); // dc_port
+  return writer.buffer;
+}
+export interface MtcuteDC {
+  id: number;
+  ip: string;
+  port: number;
+  media?: true;
+}
 const MTCUTE_HAS_SELF_FLAG = 1;
-const MTCUTE_TEST_MODE_FLAG = 2; // TODO: flag 4?
-const MTCUTE_IPV6_FLAG = 1;
+const MTCUTE_TEST_MODE_FLAG = 2;
+const MTCUTE_MEDIA_DC_FLAG = 4;
+
+const MTCUTE_DC_IPV6_FLAG = 1;
+const MTCUTE_DC_MEDIA_FLAG = 2;

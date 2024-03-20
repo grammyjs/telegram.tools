@@ -1,4 +1,5 @@
 import { assertEquals } from "$std/assert/mod.ts";
+import { serializeMtcute } from "./session_string.tsx";
 import { deserializeTelethon } from "./session_string.tsx";
 import {
   deserializeGramjs,
@@ -47,7 +48,7 @@ Deno.test("Telethon", async (t) => {
   const serialized =
     "1AwAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
-  await t.step("serializeTelethon", () => {
+  await t.step("serialize", () => {
     assertEquals(
       serializeTelethon(dc, ip, port, authKey),
       serialized,
@@ -83,5 +84,35 @@ Deno.test("GramJS", async (t) => {
     assertEquals(deserialized.ip, ip);
     assertEquals(deserialized.port, port);
     assertEquals(deserialized.authKey, authKey);
+  });
+});
+
+Deno.test("mtcute", async (t) => {
+  const serialized =
+    "AwUAAAAXAQIADjE0OS4xNTQuMTY3LjUwALsBAAAXAQICDzE0OS4xNTQuMTY3LjIyMrsBAAA5MAAAAAAAADeXebwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  const primaryDc = { id: 2, ip: "149.154.167.50", port: 443 } as const;
+  const mediaDc = {
+    id: 2,
+    ip: "149.154.167.222",
+    port: 443,
+    media: true,
+  } as const;
+  const isBot = false;
+  const userId = 12345;
+  const testMode = false;
+  const authKey = new Uint8Array(32);
+
+  await t.step("serialize", () => {
+    assertEquals(
+      serializeMtcute(
+        testMode,
+        primaryDc,
+        mediaDc,
+        userId,
+        isBot,
+        authKey,
+      ),
+      serialized,
+    );
   });
 });

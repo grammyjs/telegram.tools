@@ -266,13 +266,12 @@ async function generateSessionString(library: ValidLibrary) {
       const me = await client.getMe();
       sessionString.value = serializeMtcute(
         testMode,
-        dcId,
-        ip,
-        80,
+        { id: dcId, ip, port: 80 },
+        null,
         me.id,
         me.isBot,
         authKey,
-      ); // TODO: tests
+      );
       return;
     }
     case "mtkruto":
