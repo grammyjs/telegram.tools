@@ -252,7 +252,7 @@ export function serializeMtcute(
   ); // flags
 
   writer.write(new Uint8Array([0x01])); // dc_version
-  writer.write(new Uint8Array([dcId])); // dc_id
+  writer.writeBytes(new Uint8Array([dcId])); // dc_id
   writer.writeInt32(ip.includes(":") ? MTCUTE_IPV6_FLAG : 0); // dc_flags
   writer.writeString(ip); // dc_ip
   writer.writeInt32(port); // dc_port
