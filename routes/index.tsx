@@ -12,8 +12,8 @@ import { Key } from "../components/icons/Key.tsx";
 
 const sections = [
   {
-    name: "Unlisted",
-    description: "Tools that don’t fit in a specific section.",
+    name: "System Status",
+    description: "Tools that check if the Telegram servers are up",
     tools: [
       {
         href: "/connectivity-test",
@@ -21,6 +21,13 @@ const sections = [
         name: "Connectivity Test",
         description:
           "See if you are able to reach Telegram\u2019s data centers.",
+      },
+      {
+        href: "/bot-api-status",
+        icon: <Radio />,
+        name: "Bot API Status",
+        description:
+          "See if you are able to reach Telegram\u2019s Bot API server.",
       },
     ],
   },
