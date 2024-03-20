@@ -8,7 +8,7 @@ import { Select } from "../components/Select.tsx";
 import { Error, error } from "./Error.tsx";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 import {
-  serializeGramJS,
+  serializeGramjs,
   serializeMtcute,
   serializePyrogram,
   serializeTelethon,
@@ -260,7 +260,7 @@ async function generateSessionString(library: ValidLibrary) {
       break;
     }
     case "gramjs":
-      sessionString.value = serializeGramJS(dcId, ip, 80, authKey);
+      sessionString.value = serializeGramjs(dcId, ip, 80, authKey);
       break;
     case "mtcute": {
       const me = await client.getMe();

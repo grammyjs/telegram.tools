@@ -1,29 +1,60 @@
-import { base64EncodeUrlSafe } from "mtkruto/utilities/1_base64.ts";
+import {
+  base64DecodeUrlSafe,
+  base64EncodeUrlSafe,
+} from "mtkruto/utilities/1_base64.ts";
+import { bigIntFromBuffer } from "mtkruto/utilities/0_bigint.ts";
 import { bufferFromBigInt } from "mtkruto/utilities/0_buffer.ts";
 import { TLRawWriter } from "mtkruto/tl/0_tl_raw_writer.ts";
-import { parse } from "ipaddr.js";
-import { encodeBase64 } from "mtkruto/0_deps.ts";
+import { fromByteArray, parse } from "ipaddr.js";
+import { decodeBase64, encodeBase64 } from "mtkruto/0_deps.ts";
+import { TLRawReader } from "mtkruto/tl/0_tl_raw_reader.ts";
 
 function writeUint16(value: number, writer: TLRawWriter) {
   writer.write(new Uint8Array(2));
   new DataView(writer.buffer.buffer).setUint16(writer.buffer.length - 2, value);
+}
+function readUint16(reader: TLRawReader) {
+  return new DataView(reader.read(2).buffer).getUint16(0);
 }
 
 function writeInt16(value: number, writer: TLRawWriter) {
   writer.write(new Uint8Array(2));
   new DataView(writer.buffer.buffer).setInt16(writer.buffer.length - 2, value);
 }
-
-export function base64EncodeUrlSafeNoTrim(data: ArrayBuffer | string) {
-  return encodeBase64(data).replaceAll("+", "-").replaceAll("/", "_");
+function readInt16(reader: TLRawReader) {
+  return new DataView(reader.read(2).buffer).getInt16(0);
 }
 
-export function base64EncodeUrlSafeNoTrimNoUrlSafe(data: ArrayBuffer | string) {
+export const errInvalid = new Error("Invalid session string");
+
+function base64EncodeUrlSafeNoTrim(data: ArrayBuffer | string) {
+  return encodeBase64(data).replaceAll("+", "-").replaceAll("/", "_");
+}
+function base64DecodeUrlSafeNoTrim(data: string) {
+  return decodeBase64(data.replaceAll("-", "+").replaceAll("_", "/"));
+}
+
+function base64EncodeUrlSafeNoTrimNoUrlSafe(data: ArrayBuffer | string) {
   return encodeBase64(data);
+}
+function base64DecodeUrlSafeNoTrimNoUrlSafe(data: string) {
+  return decodeBase64(data);
+}
+
+export interface CommonSessionStringFormat {
+  dc: number;
+  ip?: string;
+  ipv6?: boolean;
+  port?: number;
+  authKey: Uint8Array;
+  testMode?: boolean;
+  apiId?: number;
+  userId?: number;
+  isBot?: boolean;
 }
 
 /**
- * Serialize a Telethon session string.
+ * Telthon session strings
  *
  * +---------+------------------+-----------+
  * | Size    | Type             | Content   |
@@ -48,9 +79,33 @@ export function serializeTelethon(
   writer.write(authKey);
   return "1" + base64EncodeUrlSafeNoTrim(writer.buffer);
 }
+export function deserializeTelethon(string: string): CommonSessionStringFormat {
+  if (string[0] != "1") {
+    throw errInvalid;
+  }
+  string = string.slice(1);
+  const reader = new TLRawReader(base64DecodeUrlSafeNoTrim(string));
+
+  const ipv4 = string.length == 352;
+  const ipLen = ipv4 ? 4 : 16;
+
+  const dc = reader.read(1)[0];
+  const ip = fromByteArray(reader.read(ipLen)).toString();
+
+  const port = readUint16(reader);
+  const authKey = reader.buffer;
+
+  return {
+    dc,
+    ip,
+    ipv6: !ipv4,
+    port,
+    authKey,
+  };
+}
 
 /**
- * Serialize a GramJS session string.
+ * GramJS session strings
  *
  * +-------------+------------------+-----------+
  * | Size        | Type             | Content   |
@@ -64,7 +119,7 @@ export function serializeTelethon(
  *
  * A constant "1" is appended after encoding in Base64 (not URL-safe).
  */
-export function serializeGramJS(
+export function serializeGramjs(
   dcId: number,
   ip: string,
   port: number,
@@ -82,9 +137,32 @@ export function serializeGramJS(
 
   return "1" + base64EncodeUrlSafeNoTrimNoUrlSafe(writer.buffer);
 }
+export function deserializeGramjs(string: string): CommonSessionStringFormat {
+  if (string[0] != "1") {
+    throw errInvalid;
+  }
+  string = string.slice(1);
+  const reader = new TLRawReader(base64DecodeUrlSafeNoTrimNoUrlSafe(string));
+
+  const dc = reader.read(1)[0];
+
+  const ipLen = readInt16(reader);
+  const ip = fromByteArray(reader.read(ipLen)).toString();
+
+  const port = readInt16(reader);
+  const authKey = reader.buffer;
+
+  return {
+    dc,
+    ip,
+    ipv6: ipLen != 4,
+    port,
+    authKey,
+  };
+}
 
 /**
- * Serialize a Pyrogram session string.
+ * Pyrogram session strings
  *
  * +------+------------+------------+
  * | Size |   Type     |   Content  |
@@ -114,11 +192,32 @@ export function serializePyrogram(
   writer.write(authKey);
   writer.write(bufferFromBigInt(userId, 64 / 8, false, false));
   writer.write(new Uint8Array([isBot ? 1 : 0]));
-  return base64EncodeUrlSafe(writer.buffer).replace(/(=+)$/, "");
+  return base64EncodeUrlSafe(writer.buffer);
+}
+export function deserializePyrogram(string: string): CommonSessionStringFormat {
+  const reader = new TLRawReader(base64DecodeUrlSafe(string));
+  if (reader.buffer.length != 271) {
+    throw errInvalid;
+  }
+  const dc = reader.read(1)[0]; // 1
+  const apiId = Number(bigIntFromBuffer(reader.read(32 / 8), false, false)); // 4
+  const testMode = reader.read(1)[0] == 1; // 1
+  const authKey = reader.read(256); // 256
+  const userId = Number(bigIntFromBuffer(reader.read(64 / 8), false, false)); // 8
+  const isBot = reader.read(1)[0] == 1; // 1
+
+  return {
+    dc,
+    apiId,
+    testMode,
+    authKey,
+    userId,
+    isBot,
+  };
 }
 
 /**
- * Serialize an mtcute session string.
+ * mtcute session strings
  *
  * +--------+------------+------------+
  * |  Size  |    Type    |  Content   |

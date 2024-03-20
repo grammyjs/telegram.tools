@@ -86,7 +86,7 @@ const sections = [
         description: "Convert between different known session string formats.",
       },
       {
-        href: "/webhook-manager",
+        href: "/session-string-analyzer",
         icon: <FileText />,
         name: "Session String Analyzer",
         description: "Extract information from session strings.",

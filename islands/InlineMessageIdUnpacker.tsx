@@ -28,37 +28,33 @@ export function InlineMessageIdUnpacker() {
       return;
     }
 
-    // try {
-    const buffer = base64DecodeUrlSafe(id);
-    console.log(buffer);
+    try {
+      const buffer = base64DecodeUrlSafe(id);
 
-    // if (buffer.size )
+      const reader = new TLReader(buffer);
 
-    const reader = new TLReader(buffer);
+      const cid = buffer.byteLength == 20
+        ? inputBotInlineMessageID_CTR
+        : inputBotInlineMessageID64_CTR;
 
-    // AgAAAG0OBgDmwLU4SLlvGwusw7g
-    const cid = buffer.byteLength == 20
-      ? inputBotInlineMessageID_CTR
-      : inputBotInlineMessageID64_CTR;
-
-    const object = reader.readObject(cid);
-    if (object instanceof types.InputBotInlineMessageID) {
-      data.value = {
-        dc: object.dc_id.toString(),
-        id: object.id.toString(),
-        accessHash: object.access_hash.toString(),
-      };
-    } else if (object instanceof types.InputBotInlineMessageID64) {
-      data.value = {
-        dc: object.dc_id.toString(),
-        userId: object.owner_id.toString(),
-        id: object.id.toString(),
-        accessHash: object.access_hash.toString(),
-      };
+      const object = reader.readObject(cid);
+      if (object instanceof types.InputBotInlineMessageID) {
+        data.value = {
+          dc: object.dc_id.toString(),
+          id: object.id.toString(),
+          accessHash: object.access_hash.toString(),
+        };
+      } else if (object instanceof types.InputBotInlineMessageID64) {
+        data.value = {
+          dc: object.dc_id.toString(),
+          userId: object.owner_id.toString(),
+          id: object.id.toString(),
+          accessHash: object.access_hash.toString(),
+        };
+      }
+    } catch {
+      // yes
     }
-    // } catch {
-    // yes
-    // }
   });
 
   return (

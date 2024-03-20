@@ -141,7 +141,6 @@ function Manage() {
 
   useEffect(() => {
     Promise.resolve().then(async () => {
-      console.log(token);
       const bot_ = new grammy.Bot(token);
       const [{ username: name }, { url, allowed_updates: allowedUpdates }] =
         await Promise.all([bot_.api.getMe(), bot_.api.getWebhookInfo()]);
