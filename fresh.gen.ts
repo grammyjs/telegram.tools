@@ -4,6 +4,7 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $_middleware from "./routes/_middleware.tsx";
 import * as $connectivity_test from "./routes/connectivity-test.tsx";
 import * as $file_id_analyzer from "./routes/file-id-analyzer.tsx";
 import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
@@ -32,6 +33,7 @@ const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
+    "./routes/_middleware.tsx": $_middleware,
     "./routes/connectivity-test.tsx": $connectivity_test,
     "./routes/file-id-analyzer.tsx": $file_id_analyzer,
     "./routes/filter-query-browser.tsx": $filter_query_browser,
