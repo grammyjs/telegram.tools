@@ -144,9 +144,12 @@ export default function Home() {
           &copy; {new Date().getFullYear() > 2024 && "2024-"}
           {new Date().getFullYear()}{" "}
           grammyjs &middot; telegram.tools is not affiliated with Telegram.
-       
         </span>
-        <a href="https://github.com/grammyjs/telegram.tools" target="_blank" class="text-grammy"> 
+        <a
+          href="https://github.com/grammyjs/telegram.tools"
+          target="_blank"
+          class="text-grammy"
+        >
           Source Code
         </a>
       </footer>
