@@ -12,7 +12,7 @@ import {
   serializeMtcute,
   serializePyrogram,
   serializeTelethon,
-} from "../lib/session_string.tsx";
+} from "../lib/session_string.ts";
 import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { storedString } from "../lib/stored_signals.tsx";

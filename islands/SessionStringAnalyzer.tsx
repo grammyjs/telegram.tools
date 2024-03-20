@@ -12,7 +12,7 @@ import {
   deserializeMtkruto,
   deserializePyrogram,
   deserializeTelethon,
-} from "../lib/session_string.tsx";
+} from "../lib/session_string.ts";
 
 const hash = getHashSignal();
 const getString = () => decodeURIComponent(hash.value.slice(1));

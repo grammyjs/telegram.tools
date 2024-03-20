@@ -5,7 +5,7 @@ import "prism-json";
 import { useEffect } from "preact/hooks";
 import { signal, useComputed, useSignal } from "@preact/signals";
 import { storedBoolean } from "../lib/stored_signals.tsx";
-import { useLiveQuerySignal } from "../lib/dexie_live_query_signal.tsx";
+import { useLiveQuerySignal } from "../lib/dexie_live_query_signal.ts";
 import { Db, Update } from "../lib/update_explorer_db.ts";
 import { Caption } from "../components/Caption.tsx";
 import { Button } from "../components/Button.tsx";

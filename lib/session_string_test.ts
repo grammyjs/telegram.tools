@@ -1,14 +1,14 @@
 import { assertEquals } from "$std/assert/mod.ts";
-import { deserializeMtkruto } from "./session_string.tsx";
-import { serializeMtcute } from "./session_string.tsx";
-import { deserializeTelethon } from "./session_string.tsx";
+import { deserializeMtkruto } from "./session_string.ts";
+import { serializeMtcute } from "./session_string.ts";
+import { deserializeTelethon } from "./session_string.ts";
 import {
   deserializeGramjs,
   deserializePyrogram,
   serializeGramjs,
   serializePyrogram,
   serializeTelethon,
-} from "./session_string.tsx";
+} from "./session_string.ts";
 
 Deno.test("Pyrogram", async (t) => {
   const dc = 2;
@@ -35,9 +35,6 @@ Deno.test("Pyrogram", async (t) => {
     assertEquals(deserialized.authKey, authKey);
     assertEquals(deserialized.userId, userId);
     assertEquals(deserialized.isBot, isBot);
-  });
-
-  await t.step("smoke", () => {
   });
 });
 
