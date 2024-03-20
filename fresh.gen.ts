@@ -18,6 +18,7 @@ import * as $webhook_manager from "./routes/webhook-manager.tsx";
 import * as $Alert from "./islands/Alert.tsx";
 import * as $Confirmation from "./islands/Confirmation.tsx";
 import * as $ConnectivityTest from "./islands/ConnectivityTest.tsx";
+import * as $Disclaimer from "./islands/Disclaimer.tsx";
 import * as $Dots from "./islands/Dots.tsx";
 import * as $Error from "./islands/Error.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
@@ -50,6 +51,7 @@ const manifest = {
     "./islands/Alert.tsx": $Alert,
     "./islands/Confirmation.tsx": $Confirmation,
     "./islands/ConnectivityTest.tsx": $ConnectivityTest,
+    "./islands/Disclaimer.tsx": $Disclaimer,
     "./islands/Dots.tsx": $Dots,
     "./islands/Error.tsx": $Error,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,

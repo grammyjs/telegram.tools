@@ -9,6 +9,8 @@ import { Repeat } from "../components/icons/Repeat.tsx";
 import { FileText } from "../components/icons/FileText.tsx";
 import { At } from "../components/icons/At.tsx";
 import { Key } from "../components/icons/Key.tsx";
+import { Disclaimer } from "../islands/Disclaimer.tsx";
+import { Error } from "../islands/Error.tsx";
 
 const sections = [
   {
@@ -139,20 +141,22 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <footer class="text-xs py-10 flex gap-10 items-center justify-between flex-wrap">
+      <footer class="text-xs py-10 flex gap-10 items-center justify-between flex-wrap flex-wrap-reverse border-t border-border mt-10">
         <span class="opacity-50">
           &copy; {new Date().getFullYear() > 2024 && "2024-"}
-          {new Date().getFullYear()}{" "}
-          grammyjs &middot; telegram.tools is not affiliated with Telegram.
+          {new Date().getFullYear()} grammyjs
         </span>
-        <a
-          href="https://github.com/grammyjs/telegram.tools"
-          target="_blank"
-          class="text-grammy"
-        >
-          Source Code
-        </a>
+        <div class="flex gap-5 text-grammy flex-wrap">
+          <Disclaimer />
+          <a
+            href="https://github.com/grammyjs/telegram.tools"
+            target="_blank"
+          >
+            Source Code
+          </a>
+        </div>
       </footer>
+      <Error />
     </>
   );
 }

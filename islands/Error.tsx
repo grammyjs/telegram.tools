@@ -1,8 +1,18 @@
-import { signal } from "@preact/signals";
+import { ComponentChildren } from "preact";
+import { effect, signal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
+import { IS_BROWSER } from "$fresh/runtime.ts";
 import { Button } from "../components/Button.tsx";
 
-export const error = signal<null | string>(null);
+export const error = signal<null | ComponentChildren>(null);
+
+IS_BROWSER && effect(() => {
+  if (error.value != null) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
 
 export function Error({ onDismiss }: { onDismiss?: () => void }) {
   useEffect(() => {
