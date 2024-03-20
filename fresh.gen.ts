@@ -10,7 +10,6 @@ import * as $file_id_analyzer from "./routes/file-id-analyzer.tsx";
 import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $inline_message_id_unpacker from "./routes/inline-message-id-unpacker.tsx";
-import * as $nindex from "./routes/nindex.tsx";
 import * as $session_string_analyzer from "./routes/session-string-analyzer.tsx";
 import * as $session_string_generator from "./routes/session-string-generator.tsx";
 import * as $test from "./routes/test.tsx";
@@ -41,7 +40,6 @@ const manifest = {
     "./routes/filter-query-browser.tsx": $filter_query_browser,
     "./routes/index.tsx": $index,
     "./routes/inline-message-id-unpacker.tsx": $inline_message_id_unpacker,
-    "./routes/nindex.tsx": $nindex,
     "./routes/session-string-analyzer.tsx": $session_string_analyzer,
     "./routes/session-string-generator.tsx": $session_string_generator,
     "./routes/test.tsx": $test,
