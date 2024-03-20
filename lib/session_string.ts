@@ -8,6 +8,7 @@ import {
   base64EncodeUrlSafe,
   bufferFromBigInt,
   rleDecode,
+  rleEncode,
 } from "mtkruto/1_utilities.ts";
 
 function writeUint16(value: number, writer: TLRawWriter) {
@@ -297,6 +298,12 @@ const MTCUTE_MEDIA_DC_FLAG = 4;
 const MTCUTE_DC_IPV6_FLAG = 1;
 const MTCUTE_DC_MEDIA_FLAG = 2;
 
+export function serializeMtkruto(dc: string, authKey: Uint8Array) { // TODO: test
+  const writer = new TLRawWriter();
+  writer.writeString(dc);
+  writer.writeBytes(authKey);
+  return base64EncodeUrlSafe(rleEncode(writer.buffer));
+}
 export function deserializeMtkruto(string: string): CommonSessionStringFormat {
   const reader = new TLRawReader(rleDecode(base64DecodeUrlSafe(string)));
   const dc = reader.readString();

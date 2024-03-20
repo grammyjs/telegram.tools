@@ -5,11 +5,12 @@ import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
 import { Label } from "../components/Label.tsx";
 import { Select } from "../components/Select.tsx";
-import { Error, error } from "./Error.tsx";
+import { Error, error, showDismissButton } from "./Error.tsx";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 import {
   serializeGramjs,
   serializeMtcute,
+  serializeMtkruto,
   serializePyrogram,
   serializeTelethon,
 } from "../lib/session_string.ts";
@@ -18,6 +19,9 @@ import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { storedString } from "../lib/stored_signals.tsx";
 import { getHashSignal } from "../lib/hash_signal.ts";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { Db, SessionString } from "../lib/session_string_generator_db.ts";
+
+const db = new Db();
 
 const hash = getHashSignal();
 const sessionString = signal("");
@@ -166,11 +170,37 @@ export function SessionStringGenerator() {
         </Label>
         <Label>
           <Button
-            onClick={() => {
-              loading.value = true;
-              generateSessionString(library).finally(() => {
-                loading.value = false;
-              });
+            onClick={async () => {
+              const generate = () => {
+                loading.value = true;
+                error.value = null;
+                generateSessionString(library).finally(() => {
+                  loading.value = false;
+                });
+              };
+              const string = await db.strings.get({ account: account.value });
+              if (string && "string" in string) {
+                showDismissButton.value = false;
+                error.value = (
+                  <>
+                    <p>
+                      A session string was recently generated for this account.
+                      Do you want to see that one?
+                    </p>
+                    <Button
+                      onClick={() => {
+                        fromStorage(string.string, library);
+                        error.value = null;
+                      }}
+                    >
+                      Yes
+                    </Button>
+                    <Button muted onClick={generate}>No, regenerate</Button>
+                  </>
+                );
+                return;
+              }
+              generate();
             }}
           >
             Next
@@ -206,6 +236,51 @@ function LibraryPicker() {
   );
 }
 
+async function fromStorage(
+  { apiId, dcId, ip, testMode, me, authKey }: SessionString["string"],
+  library: ValidLibrary,
+) {
+  switch (library) {
+    case "telethon":
+      sessionString.value = serializeTelethon(dcId, ip, 80, authKey);
+      break;
+    case "pyrogram": {
+      sessionString.value = serializePyrogram(
+        dcId,
+        apiId,
+        testMode,
+        authKey,
+        me.id,
+        me.isBot,
+      );
+      break;
+    }
+    case "gramjs":
+      sessionString.value = serializeGramjs(dcId, ip, 80, authKey);
+      break;
+    case "mtcute": {
+      sessionString.value = serializeMtcute(
+        testMode,
+        { id: dcId, ip, port: 80 },
+        null,
+        me.id,
+        me.isBot,
+        authKey,
+      );
+      break;
+    }
+    case "mtkruto":
+      sessionString.value = await serializeMtkruto(
+        `${dcId}${testMode ? "-test" : ""}`,
+        authKey,
+      );
+      break;
+    default:
+      error.value = "The chosen library is currently not supported.";
+      return;
+  }
+}
+
 async function generateSessionString(library: ValidLibrary) {
   if (accountType.value != "Bot") {
     error.value = "The chosen account type is currently not supported.";
@@ -238,13 +313,13 @@ async function generateSessionString(library: ValidLibrary) {
   const ip = getDcIps(dc, "ipv4")[0]; // TODO
   const dcId = Number(dc.split("-")[0]);
   const testMode = environment.value == "Test" ? true : false;
+  const me = await client.getMe();
 
   switch (library) {
     case "telethon":
       sessionString.value = serializeTelethon(dcId, ip, 80, authKey);
       break;
     case "pyrogram": {
-      const me = await client.getMe();
       sessionString.value = serializePyrogram(
         dcId,
         apiId_,
@@ -259,7 +334,6 @@ async function generateSessionString(library: ValidLibrary) {
       sessionString.value = serializeGramjs(dcId, ip, 80, authKey);
       break;
     case "mtcute": {
-      const me = await client.getMe();
       sessionString.value = serializeMtcute(
         testMode,
         { id: dcId, ip, port: 80 },
@@ -268,12 +342,18 @@ async function generateSessionString(library: ValidLibrary) {
         me.isBot,
         authKey,
       );
-      return;
+      break;
     }
     case "mtkruto":
       sessionString.value = await client.exportAuthString();
       break;
     default:
       error.value = "The chosen library is currently not supported.";
+      return;
   }
+
+  await db.strings.put({
+    account: account_,
+    string: { apiId: apiId_, ip, dcId, testMode, me, authKey },
+  });
 }

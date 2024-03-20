@@ -5,6 +5,13 @@ import { IS_BROWSER } from "$fresh/runtime.ts";
 import { Button } from "../components/Button.tsx";
 
 export const error = signal<null | ComponentChildren>(null);
+export const showDismissButton = signal(true);
+
+IS_BROWSER && effect(() => {
+  if (error.value == null) {
+    showDismissButton.value = true;
+  }
+});
 
 IS_BROWSER && effect(() => {
   if (error.value != null) {
@@ -39,14 +46,20 @@ export function Error({ onDismiss }: { onDismiss?: () => void }) {
     >
       <div class="w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm">
         <div class="flex flex-col gap-4">
-          <p>
-            {error.value}
-          </p>
-          <Button
-            onClick={dismiss}
-          >
-            Dismiss
-          </Button>
+          {typeof error.value == "string"
+            ? (
+              <p>
+                {error.value}
+              </p>
+            )
+            : error.value}
+          {showDismissButton.value && (
+            <Button
+              onClick={dismiss}
+            >
+              Dismiss
+            </Button>
+          )}
         </div>
       </div>
     </div>
