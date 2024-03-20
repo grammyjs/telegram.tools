@@ -44,23 +44,23 @@ function isValidLibrary(string: string): string is ValidLibrary {
 const libraries = [
   {
     name: "Telethon",
-    link: ["telethon.dev", "https://telethon.dev"],
+    link: "telethon.dev",
   },
   {
     name: "Pyrogram",
-    link: ["pyrogram.org", "https://pyrogram.org"],
+    link: "pyrogram.org",
   },
   {
     name: "GramJS",
-    link: ["gram.js.org", "https://gram.js.org"],
+    link: "gram.js.org",
   },
   {
     name: "mtcute",
-    link: ["mtcute.dev", "https://mtcute.dev"],
+    link: "mtcute.dev",
   },
   {
     name: "MTKruto",
-    link: ["mtkru.to", "https://mtkru.to"],
+    link: "mtkru.to",
   },
 ];
 export function SessionStringGenerator() {
@@ -69,7 +69,7 @@ export function SessionStringGenerator() {
   }
   const library = hash.value.toLowerCase().slice(1);
   if (!isValidLibrary(library)) {
-    return <PickLibrary />;
+    return <LibraryPicker />;
   }
 
   if (loading.value) {
@@ -186,7 +186,7 @@ export function SessionStringGenerator() {
   );
 }
 
-function PickLibrary() {
+function LibraryPicker() {
   return (
     <div class="gap-4 flex flex-col w-full max-w-sm mx-auto">
       <div class="text-xl font-bold">Which library do you use?</div>
@@ -198,14 +198,8 @@ function PickLibrary() {
             (location.hash = `#${v.name.toLowerCase()}`)}
         >
           <span class="text-lg pointer-events-none">{v.name}</span>
-          <a
-            class="opacity-50 text-xs"
-            href={v.link[1]}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {v.link[0]}
-          </a>
+
+          {v.link}
         </button>
       ))}
     </div>
