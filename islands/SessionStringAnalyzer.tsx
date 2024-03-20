@@ -9,6 +9,7 @@ import { encodeHex } from "$std/encoding/hex.ts";
 import {
   CommonSessionStringFormat,
   deserializeGramjs,
+  deserializeMtkruto,
   deserializePyrogram,
   deserializeTelethon,
 } from "../lib/session_string.tsx";
@@ -17,7 +18,9 @@ const hash = getHashSignal();
 const getString = () => decodeURIComponent(hash.value.slice(1));
 
 const data = signal<
-  | CommonSessionStringFormat & { format: "GramJS" | "Telethon" | "Pyrogram" }
+  | CommonSessionStringFormat & {
+    format: "GramJS" | "Telethon" | "Pyrogram" | "MTKruto";
+  }
   | null
 >(
   null,
@@ -48,6 +51,13 @@ export function SessionStringAnalyzer() {
 
     try {
       data.value = { ...deserializeGramjs(string), format: "GramJS" };
+      return;
+    } catch {
+      //
+    }
+
+    try {
+      data.value = { ...deserializeMtkruto(string), format: "MTKruto" };
       return;
     } catch {
       //

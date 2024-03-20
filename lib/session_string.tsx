@@ -1,13 +1,14 @@
-import {
-  base64DecodeUrlSafe,
-  base64EncodeUrlSafe,
-} from "mtkruto/utilities/1_base64.ts";
-import { bigIntFromBuffer } from "mtkruto/utilities/0_bigint.ts";
-import { bufferFromBigInt } from "mtkruto/utilities/0_buffer.ts";
 import { TLRawWriter } from "mtkruto/tl/0_tl_raw_writer.ts";
 import { fromByteArray, parse } from "ipaddr.js";
 import { decodeBase64, encodeBase64 } from "mtkruto/0_deps.ts";
 import { TLRawReader } from "mtkruto/tl/0_tl_raw_reader.ts";
+import { bigIntFromBuffer } from "mtkruto/utilities/0_bigint.ts";
+import {
+  base64DecodeUrlSafe,
+  base64EncodeUrlSafe,
+  bufferFromBigInt,
+  rleDecode,
+} from "mtkruto/1_utilities.ts";
 
 function writeUint16(value: number, writer: TLRawWriter) {
   writer.write(new Uint8Array(2));
@@ -42,7 +43,7 @@ function base64DecodeUrlSafeNoTrimNoUrlSafe(data: string) {
 }
 
 export interface CommonSessionStringFormat {
-  dc: number;
+  dc: number | string;
   ip?: string;
   ipv6?: boolean;
   port?: number;
@@ -295,3 +296,10 @@ const MTCUTE_MEDIA_DC_FLAG = 4;
 
 const MTCUTE_DC_IPV6_FLAG = 1;
 const MTCUTE_DC_MEDIA_FLAG = 2;
+
+export function deserializeMtkruto(string: string): CommonSessionStringFormat {
+  const reader = new TLRawReader(rleDecode(base64DecodeUrlSafe(string)));
+  const dc = reader.readString();
+  const authKey = reader.readBytes();
+  return { dc, authKey };
+}

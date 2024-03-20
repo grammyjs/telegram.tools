@@ -1,4 +1,5 @@
 import { assertEquals } from "$std/assert/mod.ts";
+import { deserializeMtkruto } from "./session_string.tsx";
 import { serializeMtcute } from "./session_string.tsx";
 import { deserializeTelethon } from "./session_string.tsx";
 import {
@@ -114,5 +115,17 @@ Deno.test("mtcute", async (t) => {
       ),
       serialized,
     );
+  });
+});
+
+Deno.test("MTKruto", async (t) => {
+  const dc = "2";
+  const authKey = new Uint8Array(256);
+  const serialized = "ATIAAv4AAQEA_wAC";
+
+  await t.step("deserialize", () => {
+    const deserialized = deserializeMtkruto(serialized);
+    assertEquals(deserialized.dc, dc);
+    assertEquals(deserialized.authKey, authKey);
   });
 });
