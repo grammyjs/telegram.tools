@@ -1,10 +1,12 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { useEffect } from "preact/hooks";
+import { createRef } from "preact";
+import { useEffect, useState } from "preact/hooks";
 import { signal, useComputed, useSignal } from "@preact/signals";
 
 import Prism from "prismjs";
 import "prism-json";
 import { UserFromGetMe } from "grammy/types.ts";
+import { matchFilter } from "grammy/filter.ts";
 
 import { storedBoolean } from "../lib/stored_signals.tsx";
 import { useLiveQuerySignal } from "../lib/dexie.ts";
@@ -125,16 +127,37 @@ function Explorer() {
   if (!token) {
     return null;
   }
+  const [filter, setFilter] = useState("");
+  const [filterValid, setFilterValid] = useState(false);
+  useEffect(() => {
+    if (!filter) {
+      setFilterValid(true);
+      return;
+    }
+    try {
+      // @ts-ignore: yes, just like that
+      matchFilter(filter);
+      setFilterValid(true);
+    } catch {
+      setFilterValid(false);
+    }
+  }, [filter]);
   const me = useSignal<UserFromGetMe | null>(null);
   const updates = useLiveQuerySignal(
     () =>
-      getDb(token).updates.reverse().offset(page * UPDATE_LIMIT).limit(
-        UPDATE_LIMIT,
-      ).toArray(),
-    [token, page],
+      getDb(token).updates.reverse()
+        .filter((v) =>
+          // @ts-ignore: please
+          filter ? matchFilter(filter)({ update: v.data }) : true
+        )
+        .offset(page * UPDATE_LIMIT).limit(
+          UPDATE_LIMIT,
+        ).toArray(),
+    [token, page, filter],
     [],
   );
 
+  const fqInput = createRef<HTMLInputElement>();
   const first = useComputed<Update | null>(() => updates.value[0] ?? null);
   const last = useComputed<Update | null>(() =>
     updates.value[updates.value.length - 1] ?? null
@@ -164,6 +187,10 @@ function Explorer() {
     const onKeyDown = async (e: KeyboardEvent) => {
       switch (e.key) {
         case "Escape":
+          if (document.activeElement == fqInput.current) {
+            fqInput.current?.blur();
+            break;
+          }
           openedUpdate.value = null;
           break;
         case "ArrowUp": {
@@ -233,12 +260,16 @@ function Explorer() {
         case "s":
         case "S":
           sounds.value = !sounds.value;
+          break;
+        case "/":
+          e.preventDefault();
+          fqInput.current?.focus();
       }
     };
     addEventListener("keydown", onKeyDown);
 
     return () => removeEventListener("keydown", onKeyDown);
-  }, [token, page]);
+  }, [token, page, fqInput]);
 
   return (
     <>
@@ -247,7 +278,7 @@ function Explorer() {
           {(!updates.value || !updates.value.length) &&
             (
               <div class="opacity-50 text-sm self-center">
-                No update received yet.
+                {filter ? "No matches found." : "No update received yet."}
               </div>
             )}
           <div class="flex flex-col w-full text-sm">
@@ -295,6 +326,7 @@ function Explorer() {
           {openedUpdate.value == null && (
             <div class="flex flex-col gap-2 opacity-50 text-sm">
               {[
+                ["/", "Filter"],
                 ["s", sounds.value ? "Turn sounds off" : "Turn sounds on"],
                 ["Esc", "Back"],
                 ["↑", "Jump to update above"],
@@ -320,7 +352,20 @@ function Explorer() {
           )}
         </div>
       </main>
-      <div class="flex gap-1 items-center justify-center fixed bottom-0 text-xs py-2 bg-background w-full">
+      <div class="flex gap-1 items-center justify-center relative fixed bottom-0 text-xs px-4 py-2 bg-background w-full">
+        <input
+          ref={fqInput}
+          type="text"
+          placeholder="Filter query"
+          onKeyUp={(e) => setFilter(e.currentTarget.value)}
+          class={`absolute top-0 left-4 top-2 bg-transparent placeholder:text-white/50 focus:outline-none ${
+            filterValid ? "" : "text-red-500"
+          } w-fit-content ${
+            filter
+              ? ""
+              : "opacity-0 pointer-events-none focus:(opacity-100 pointer-events-auto)"
+          }`}
+        />
         <div class="opacity-50 flex gap-1.5 items-center">
           {!me.value && !isModalVisible() &&
             (
