@@ -4,12 +4,16 @@ import { useEffect } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { Button } from "../components/Button.tsx";
 
-export const error = signal<null | ComponentChildren>(null);
+export const error = signal<
+  null | ComponentChildren | (() => ComponentChildren)
+>(null);
 export const showDismissButton = signal(true);
+export const autoDismiss = signal(true);
 
 IS_BROWSER && effect(() => {
   if (error.value == null) {
     showDismissButton.value = true;
+    autoDismiss.value = true;
   }
 });
 
@@ -42,16 +46,19 @@ export function Error({ onDismiss }: { onDismiss?: () => void }) {
   return (
     <div
       class="w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] p-5 flex items-center justify-center"
-      onClick={(e) => e.target == e.currentTarget && dismiss()}
+      onClick={(e) =>
+        e.target == e.currentTarget && autoDismiss.value && dismiss()}
     >
       <div class="w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm">
         <div class="flex flex-col gap-4">
-          {typeof error.value == "string"
+          {typeof error.value === "string"
             ? (
               <p>
                 {error.value}
               </p>
             )
+            : typeof error.value === "function"
+            ? error.value()
             : error.value}
           {showDismissButton.value && (
             <Button

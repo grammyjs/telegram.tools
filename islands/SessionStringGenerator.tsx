@@ -1,5 +1,5 @@
 import { Client, StorageMemory } from "mtkruto/mod.ts";
-import { signal } from "@preact/signals";
+import { Signal, signal } from "@preact/signals";
 import { Button } from "../components/Button.tsx";
 import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
@@ -20,6 +20,7 @@ import { storedString } from "../lib/stored_signals.tsx";
 import { getHashSignal } from "../lib/hash_signal.ts";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { Db, SessionString } from "../lib/session_string_generator_db.ts";
+import { autoDismiss } from "./Error.tsx";
 
 const db = new Db();
 
@@ -67,6 +68,39 @@ const libraries = [
     link: "mtkru.to",
   },
 ];
+
+async function generate(library: ValidLibrary) {
+  const generate = () => {
+    loading.value = true;
+    error.value = null;
+    generateSessionString(library).finally(() => {
+      loading.value = false;
+    });
+  };
+  const string = await db.strings.get({ account: account.value });
+  if (string && "string" in string) {
+    showDismissButton.value = false;
+    error.value = (
+      <>
+        <p>
+          A session string was recently generated for this account. Do you want
+          to see that one?
+        </p>
+        <Button
+          onClick={() => {
+            fromStorage(string.string, library);
+            error.value = null;
+          }}
+        >
+          Yes
+        </Button>
+        <Button muted onClick={generate}>No, regenerate</Button>
+      </>
+    );
+    return;
+  }
+  generate();
+}
 export function SessionStringGenerator() {
   if (!IS_BROWSER) {
     return null;
@@ -78,9 +112,12 @@ export function SessionStringGenerator() {
 
   if (loading.value) {
     return (
-      <div class="gap-1.5 text-xs opacity-50 flex w-full items-center justify-center max-w-lg mx-auto">
-        <Spinner2 size={10} /> <span>Generating session string</span>
-      </div>
+      <>
+        <div class="gap-1.5 text-xs opacity-50 flex w-full items-center justify-center max-w-lg mx-auto">
+          <Spinner2 size={10} /> <span>Generating session string</span>
+        </div>
+        <Error />
+      </>
     );
   }
   if (sessionString.value) {
@@ -120,6 +157,7 @@ export function SessionStringGenerator() {
             Environment
           </Caption>
           <Select
+            value={environment.value}
             values={[
               "Production",
               "Test",
@@ -155,6 +193,7 @@ export function SessionStringGenerator() {
               "Bot",
               "User",
             ]}
+            value={accountType.value}
             onChange={(v) => accountType.value = v}
           />
         </Label>
@@ -166,43 +205,11 @@ export function SessionStringGenerator() {
               : "Phone number in international format"}
             value={account.value}
             onChange={(e) => account.value = e.currentTarget.value}
+            onKeyDown={(e) => e.key == "Enter" && generate(library)}
           />
         </Label>
         <Label>
-          <Button
-            onClick={async () => {
-              const generate = () => {
-                loading.value = true;
-                error.value = null;
-                generateSessionString(library).finally(() => {
-                  loading.value = false;
-                });
-              };
-              const string = await db.strings.get({ account: account.value });
-              if (string && "string" in string) {
-                showDismissButton.value = false;
-                error.value = (
-                  <>
-                    <p>
-                      A session string was recently generated for this account.
-                      Do you want to see that one?
-                    </p>
-                    <Button
-                      onClick={() => {
-                        fromStorage(string.string, library);
-                        error.value = null;
-                      }}
-                    >
-                      Yes
-                    </Button>
-                    <Button muted onClick={generate}>No, regenerate</Button>
-                  </>
-                );
-                return;
-              }
-              generate();
-            }}
-          >
+          <Button onClick={() => generate(library)}>
             Next
           </Button>
           <Caption>
@@ -281,12 +288,7 @@ async function fromStorage(
   }
 }
 
-async function generateSessionString(library: ValidLibrary) {
-  if (accountType.value != "Bot") {
-    error.value = "The chosen account type is currently not supported.";
-    return;
-  }
-
+async function generateSessionString(library: ValidLibrary) { // TODO: report errors
   const apiId_ = Number(apiId.value);
   const apiHash_ = apiHash.value;
   const account_ = account.value;
@@ -298,11 +300,72 @@ async function generateSessionString(library: ValidLibrary) {
     error.value = "Invalid account details.";
     return;
   }
+  if (accountType.value != "Bot" && !account.value.startsWith("+")) {
+    error.value = "The phone number must start with a plus sign.";
+    return;
+  }
 
   const client = new Client(new StorageMemory(), apiId_, apiHash_, {
     deviceModel: navigator.userAgent.trim().split(" ")[0] || "Unknown",
+    initialDc: environment.value == "Test" ? "2-test" : undefined,
   });
-  await client.start(account_);
+
+  autoDismiss.value = false;
+  showDismissButton.value = false;
+  let firstCodeAttempt_ = true;
+  const firstCodeAttempt = signal(true);
+  let firstPasswordAttempt_ = true;
+  const firstPasswordAttempt = signal(true);
+  await client.start(
+    accountType.value == "Bot" ? account_ : {
+      phone: account_,
+      code: () =>
+        new Promise((resolve, reject) => {
+          if (!firstCodeAttempt_ && firstCodeAttempt.value) {
+            firstCodeAttempt.value = false;
+          }
+          error.value = null;
+          autoDismiss.value = false;
+          showDismissButton.value = false;
+          error.value = () => (
+            <Code
+              first={firstCodeAttempt}
+              resolve={(code) => {
+                resolve(code);
+              }}
+              cancel={() => {
+                error.value = null;
+                reject();
+              }}
+            />
+          );
+          firstCodeAttempt_ = false;
+        }),
+      password: (hint) =>
+        new Promise((resolve, reject) => {
+          if (!firstPasswordAttempt_ && firstPasswordAttempt.value) {
+            firstPasswordAttempt.value = false;
+          }
+          autoDismiss.value = false;
+          showDismissButton.value = false;
+          error.value = () => (
+            <Password
+              hint={hint}
+              first={firstPasswordAttempt}
+              resolve={(code) => {
+                resolve(code);
+              }}
+              cancel={() => {
+                error.value = null;
+                reject();
+              }}
+            />
+          );
+          firstPasswordAttempt_ = false;
+        }),
+    },
+  );
+  error.value = null;
 
   const dc = await client.storage.getDc();
   const authKey = await client.storage.getAuthKey();
@@ -356,4 +419,106 @@ async function generateSessionString(library: ValidLibrary) {
     account: account_,
     string: { apiId: apiId_, ip, dcId, testMode, me, authKey },
   });
+}
+
+function Code(
+  { first, resolve, cancel }: {
+    first: Signal<boolean>;
+    resolve: (code: string) => void;
+    cancel: () => void;
+  },
+) {
+  if (!first.value) {
+    return (
+      <>
+        <div>Invalid code.</div>
+        <Button onClick={() => first.value = true}>Retry</Button>
+        <Button
+          type="button"
+          danger
+          onClick={cancel}
+        >
+          Cancel
+        </Button>
+      </>
+    );
+  }
+  return (
+    <form
+      class="flex flex-col gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        resolve(new FormData(e.currentTarget).get("code") as string);
+      }}
+    >
+      <Label>
+        <Input
+          name="code"
+          placeholder="Code"
+          pattern="^[0-9]{4,}$"
+          required
+        />
+        <Caption>Enter the code you received.</Caption>
+      </Label>
+      <Button>Next</Button>
+      <Button
+        type="button"
+        danger
+        onClick={cancel}
+      >
+        Cancel
+      </Button>
+    </form>
+  );
+}
+
+function Password(
+  { hint, first, resolve, cancel }: {
+    hint: string | null;
+    first: Signal<boolean>;
+    resolve: (password: string) => void;
+    cancel: () => void;
+  },
+) {
+  if (!first.value) {
+    return (
+      <>
+        <div>Invalid code.</div>
+        <Button onClick={() => first.value = true}>Retry</Button>
+        <Button
+          danger
+          onClick={cancel}
+        >
+          Cancel
+        </Button>
+      </>
+    );
+  }
+  return (
+    <form
+      class="flex flex-col gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        resolve(new FormData(e.currentTarget).get("password") as string);
+      }}
+    >
+      <Label>
+        <Input
+          name="password"
+          placeholder={hint || "Password"}
+          pattern=".+"
+          required
+        />
+        <Caption>Enter your account’s password.</Caption>
+      </Label>
+      <Button>Next</Button>
+      <Button
+        type="button"
+        danger
+        onClick={cancel}
+      >
+        Cancel
+      </Button>
+    </form>
+  );
 }

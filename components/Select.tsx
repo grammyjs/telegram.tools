@@ -2,13 +2,14 @@ import { useEffect, useState } from "preact/hooks";
 import { cn } from "../lib/utils.ts";
 
 export function Select<T extends string>(
-  { values, onChange }: { values: T[]; onChange: (value: T) => void },
+  { value, values, onChange }: {
+    value: T;
+    values: T[];
+    onChange: (value: T) => void;
+  },
 ) {
   const [focused, setFocused] = useState(false);
   const [active, setActive] = useState<T | null>(null);
-  const [value, setValue] = useState<T>(values[0]);
-
-  useEffect(() => onChange(value), [value]);
 
   useEffect(() => void (!focused && setActive(null)), [focused]);
 
@@ -29,7 +30,7 @@ export function Select<T extends string>(
           ? e.target.getAttribute("data-value")
           : null;
         if (value) {
-          setValue(value as T);
+          onChange(value as T);
           setFocused(false);
         } else if (
           e.target == e.currentTarget ||
@@ -41,7 +42,7 @@ export function Select<T extends string>(
       }}
       onKeyPress={(e) => {
         if (e.key == "Enter" && focused) {
-          active != null && setValue(active);
+          active != null && onChange(active);
           setFocused(false);
         }
       }}
