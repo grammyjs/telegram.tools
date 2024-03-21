@@ -174,7 +174,7 @@ function Explorer() {
           setModalContent(e.data.error);
           break;
         case "sound":
-          sounds.value && new Audio("/update-explorer/pulse.wav").play();
+          sounds.value && new Audio("/update-explorer/in.mp3").play();
           break;
       }
     });
