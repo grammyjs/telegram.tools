@@ -13,9 +13,8 @@ import {
   serializeTelethon,
 } from "../lib/session_string.ts";
 import { storedString } from "../lib/stored_signals.tsx";
-import { getHashSignal } from "../lib/hash.ts";
+import { getHashSignal, setHash } from "../lib/hash.ts";
 import { Db, SessionString } from "../lib/session_string_generator_db.ts";
-import { setHash } from "../lib/hash.ts";
 
 import { Button } from "../components/Button.tsx";
 import { Caption } from "../components/Caption.tsx";
@@ -34,6 +33,7 @@ const getHashParts = () => {
   if (parts.length > 3) {
     return [];
   } else {
+    console.log(parts);
     return parts;
   }
 };
@@ -280,7 +280,7 @@ function LibraryPicker() {
           class="bg-gradient py-3 px-4 rounded-xl border-border border-2 cursor-pointer flex flex-col items-start justify-center"
           onClick={(e) =>
             e.currentTarget == e.target &&
-            (setHash(v.name.toLowerCase()))}
+            setHash(v.name.toLowerCase())}
         >
           <span class="text-lg pointer-events-none">{v.name}</span>
           <span class="opacity-50 text-xs">{v.link}</span>

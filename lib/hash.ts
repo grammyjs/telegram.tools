@@ -18,5 +18,5 @@ export function getHashSignal() {
 export function setHash(hash: string) {
   const url = new URL(location.href);
   url.hash = hash;
-  history.replaceState({}, "", url);
+  location.replace(url);
 }
