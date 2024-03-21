@@ -24,6 +24,7 @@ import { Select } from "../components/Select.tsx";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 
 import { hideModal, Modal, setModalContent } from "./Modal.tsx";
+import { displayError } from "./Modal.tsx";
 
 const db = new Db();
 
@@ -33,7 +34,6 @@ const getHashParts = () => {
   if (parts.length > 3) {
     return [];
   } else {
-    console.log(parts);
     return parts;
   }
 };
@@ -110,12 +110,15 @@ const libraries = [
 ];
 
 async function generate(library: ValidLibrary) {
-  const generate = () => {
+  const generate = async () => {
     loading.value = true;
-    hideModal();
-    generateSessionString(library).finally(() => {
+    try {
+      hideModal();
+      await generateSessionString(library).finally(() => {
+      });
+    } finally {
       loading.value = false;
-    });
+    }
   };
   const string = await db.strings.get({ account: account.value });
   if (string && "string" in string) {
@@ -140,7 +143,7 @@ async function generate(library: ValidLibrary) {
     );
     return;
   }
-  generate();
+  await generate();
 }
 export function SessionStringGenerator() {
   if (!IS_BROWSER) {
@@ -197,7 +200,7 @@ export function SessionStringGenerator() {
         class="gap-4 flex flex-col w-full max-w-lg mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
-          generate(library);
+          generate(library).catch(displayError);
         }}
       >
         <Label>

@@ -53,6 +53,10 @@ export function hideModal() {
   setModalContent(null);
 }
 
+export function displayError(err: unknown, context?: string) {
+  setModalContent(context ? `${context}: ${err}` : String(err));
+}
+
 export function Modal({ onDismiss }: { onDismiss?: () => void }) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {

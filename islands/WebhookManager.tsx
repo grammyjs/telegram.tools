@@ -15,7 +15,7 @@ import { Input } from "../components/Input.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
 
 import { Confirmation, confirmation } from "./Confirmation.tsx";
-import { hideModal, Modal, setModalContent } from "./Modal.tsx";
+import { Modal, setModalContent } from "./Modal.tsx";
 
 interface Bot {
   token: string;
