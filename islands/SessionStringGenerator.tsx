@@ -5,6 +5,7 @@ import { Client, StorageMemory } from "mtkruto/mod.ts";
 import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 
+import { isValidLibrary, ValidLibrary } from "../lib/misc.ts";
 import {
   serializeGramjs,
   serializeMtcute,
@@ -73,18 +74,6 @@ const accountType = computed<"Bot" | "User">(() => {
   }
 });
 const account = signal("");
-
-const validLibraries = [
-  "telethon",
-  "pyrogram",
-  "gramjs",
-  "mtcute",
-  "mtkruto",
-] as const;
-type ValidLibrary = (typeof validLibraries)[number];
-function isValidLibrary(string: string): string is ValidLibrary {
-  return validLibraries.includes(string as unknown as ValidLibrary);
-}
 
 const libraries = [
   {

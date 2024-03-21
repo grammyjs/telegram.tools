@@ -82,11 +82,10 @@ const sections = [
           "Generate a session string for your desired client library.",
       },
       {
-        href: "/webhook-manager",
+        href: "/session-string-converter",
         icon: <Repeat />,
         name: "Session String Converter",
         description: "Convert between different known session string formats.",
-        disabled: true,
       },
       {
         href: "/session-string-analyzer",

@@ -11,6 +11,7 @@ import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $inline_message_id_unpacker from "./routes/inline-message-id-unpacker.tsx";
 import * as $session_string_analyzer from "./routes/session-string-analyzer.tsx";
+import * as $session_string_converter from "./routes/session-string-converter.tsx";
 import * as $session_string_generator from "./routes/session-string-generator.tsx";
 import * as $test from "./routes/test.tsx";
 import * as $update_explorer from "./routes/update-explorer.tsx";
@@ -26,6 +27,7 @@ import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx
 import * as $Modal from "./islands/Modal.tsx";
 import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringAnalyzer from "./islands/SessionStringAnalyzer.tsx";
+import * as $SessionStringConverter from "./islands/SessionStringConverter.tsx";
 import * as $SessionStringGenerator from "./islands/SessionStringGenerator.tsx";
 import * as $UpdateExplorer from "./islands/UpdateExplorer.tsx";
 import * as $WebhookManager from "./islands/WebhookManager.tsx";
@@ -42,6 +44,7 @@ const manifest = {
     "./routes/index.tsx": $index,
     "./routes/inline-message-id-unpacker.tsx": $inline_message_id_unpacker,
     "./routes/session-string-analyzer.tsx": $session_string_analyzer,
+    "./routes/session-string-converter.tsx": $session_string_converter,
     "./routes/session-string-generator.tsx": $session_string_generator,
     "./routes/test.tsx": $test,
     "./routes/update-explorer.tsx": $update_explorer,
@@ -59,6 +62,7 @@ const manifest = {
     "./islands/Modal.tsx": $Modal,
     "./islands/Select.tsx": $Select,
     "./islands/SessionStringAnalyzer.tsx": $SessionStringAnalyzer,
+    "./islands/SessionStringConverter.tsx": $SessionStringConverter,
     "./islands/SessionStringGenerator.tsx": $SessionStringGenerator,
     "./islands/UpdateExplorer.tsx": $UpdateExplorer,
     "./islands/WebhookManager.tsx": $WebhookManager,

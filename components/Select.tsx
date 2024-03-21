@@ -3,10 +3,11 @@ import { useEffect, useState } from "preact/hooks";
 import { cn } from "../lib/cn.ts";
 
 export function Select<T extends string>(
-  { value, values, onChange }: {
+  { value, values, onChange, nameMap }: {
     value: T;
     values: T[];
     onChange: (value: T) => void;
+    nameMap?: Record<T, string>;
   },
 ) {
   const [focused, setFocused] = useState(false);
@@ -16,7 +17,7 @@ export function Select<T extends string>(
 
   return (
     <div
-      class="relative w-full rounded-lg"
+      class="relative w-full rounded-lg h-fit-content"
       onBlurCapture={(e) => {
         if (e.relatedTarget instanceof HTMLButtonElement) {
           const value = e.relatedTarget.getAttribute("data-value");
@@ -80,13 +81,13 @@ export function Select<T extends string>(
         }`}
         data-x
       >
-        <div data-x>{value}</div>
+        <div data-x>{nameMap?.[value] ?? value}</div>
         <div class="absolute h-full top-0 right-1 flex items-center" data-x>
           <Icon />
         </div>
         <div
           data-x
-          class="w-full h-full absolute bg-transparent group-hover:cursor-pointer"
+          class="w-full h-full absolute bg-transparent hidden group-focus:block group-hover:cursor-pointer"
         />
         <div
           data-x
@@ -112,7 +113,7 @@ export function Select<T extends string>(
             }}
             data-value={v}
           >
-            <span data-value={v}>{v}</span>
+            <span data-value={v}>{nameMap?.[v] ?? v}</span>
           </button>
         ))}
       </div>
