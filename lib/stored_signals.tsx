@@ -1,5 +1,5 @@
-import { signal } from "@preact/signals";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { signal } from "@preact/signals";
 
 export function storedBoolean(defaultValue: boolean, key: string) {
   const signal_ = signal(

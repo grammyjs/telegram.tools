@@ -1,5 +1,6 @@
 import { ComponentChildren } from "preact";
 import { useEffect, useState } from "preact/hooks";
+
 import {
   deserializeFileId,
   deserializeUniqueFileId,
@@ -7,8 +8,9 @@ import {
   fileTypeMap,
   UniqueFileId,
 } from "../lib/file_id.ts";
+import { setHash } from "../lib/hash.ts";
+
 import { Input } from "../components/Input.tsx";
-import { setHash } from "../lib/utils.ts";
 
 export function FileIdAnalyzer() {
   const [fileId, setFileId] = useState(

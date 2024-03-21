@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
-import { cn } from "../lib/utils.ts";
+
+import { cn } from "../lib/cn.ts";
 
 export function Select<T extends string>(
   { value, values, onChange }: {

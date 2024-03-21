@@ -1,19 +1,23 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { UserFromGetMe } from "grammy/types.ts";
-import Prism from "prismjs";
-import "prism-json";
 import { useEffect } from "preact/hooks";
 import { signal, useComputed, useSignal } from "@preact/signals";
+
+import Prism from "prismjs";
+import "prism-json";
+import { UserFromGetMe } from "grammy/types.ts";
+
 import { storedBoolean } from "../lib/stored_signals.tsx";
-import { useLiveQuerySignal } from "../lib/dexie_live_query_signal.ts";
+import { useLiveQuerySignal } from "../lib/dexie.ts";
 import { Db, Update } from "../lib/update_explorer_db.ts";
-import { setHash } from "../lib/utils.ts";
+import { setHash } from "../lib/hash.ts";
+
 import { Caption } from "../components/Caption.tsx";
 import { Button } from "../components/Button.tsx";
 import { Input } from "../components/Input.tsx";
 import { Router, useHash } from "../components/Router.tsx";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
+
 import { Error, error } from "./Error.tsx";
 
 const dbs = new Map<string, Db>();

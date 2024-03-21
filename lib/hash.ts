@@ -1,5 +1,6 @@
-import { ReadonlySignal, signal } from "@preact/signals";
+///<reference lib="dom" />
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { ReadonlySignal, signal } from "@preact/signals";
 
 export function getHashSignal() {
   const signal_ = signal(IS_BROWSER ? location.hash : "");
@@ -12,4 +13,10 @@ export function getHashSignal() {
   });
 
   return signal_ as ReadonlySignal<string>;
+}
+
+export function setHash(hash: string) {
+  const url = new URL(location.href);
+  url.hash = hash;
+  history.replaceState({}, "", url);
 }

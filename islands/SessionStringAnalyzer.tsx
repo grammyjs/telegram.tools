@@ -1,11 +1,14 @@
+import { encodeHex } from "$std/encoding/hex.ts";
+import { ComponentChildren } from "preact";
+import { signal, useSignalEffect } from "@preact/signals";
+
+import { id, types } from "mtkruto/2_tl.ts";
+
 import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
-import { ComponentChildren } from "preact";
 import { Label } from "../components/Label.tsx";
-import { getHashSignal } from "../lib/hash_signal.ts";
-import { signal, useSignalEffect } from "@preact/signals";
-import { id, types } from "mtkruto/2_tl.ts";
-import { encodeHex } from "$std/encoding/hex.ts";
+
+import { getHashSignal, setHash } from "../lib/hash.ts";
 import {
   CommonSessionStringFormat,
   deserializeGramjs,
@@ -13,7 +16,6 @@ import {
   deserializePyrogram,
   deserializeTelethon,
 } from "../lib/session_string.ts";
-import { setHash } from "../lib/utils.ts";
 
 const hash = getHashSignal();
 const getString = () => decodeURIComponent(hash.value.slice(1));

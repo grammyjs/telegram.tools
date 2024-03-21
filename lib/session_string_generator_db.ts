@@ -1,4 +1,5 @@
 import { Dexie, Table } from "dexie";
+
 import type { User } from "mtkruto/3_types.ts";
 
 export interface SessionString {

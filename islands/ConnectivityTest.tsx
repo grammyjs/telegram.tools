@@ -1,10 +1,15 @@
-import { signal } from "@preact/signals";
-import { useState } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { useState } from "preact/hooks";
+import { signal } from "@preact/signals";
+
 import type { DC } from "mtkruto/mod.ts";
-import { decodeHex, encodeHex, prefixedLocalStorage } from "../lib/utils.ts";
+
+import { decodeHex, encodeHex } from "../lib/hex.ts";
+import { prefixedLocalStorage } from "../lib/prefixed_storage.ts";
+
 import { Button } from "../components/Button.tsx";
 import { Spinner } from "../components/icons/Spinner.tsx";
+
 import { Alert } from "./Alert.tsx";
 import { Select } from "./Select.tsx";
 

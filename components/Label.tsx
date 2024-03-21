@@ -1,5 +1,6 @@
 import { JSX } from "preact";
-import { cn } from "../lib/utils.ts";
+
+import { cn } from "../lib/cn.ts";
 
 export function Label(props: JSX.HTMLAttributes<HTMLDivElement>) {
   return (

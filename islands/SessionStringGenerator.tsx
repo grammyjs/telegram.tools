@@ -1,12 +1,10 @@
-import { Client, StorageMemory } from "mtkruto/mod.ts";
+import { IS_BROWSER } from "$fresh/runtime.ts";
 import { computed, Signal, signal } from "@preact/signals";
-import { Button } from "../components/Button.tsx";
-import { Caption } from "../components/Caption.tsx";
-import { Input } from "../components/Input.tsx";
-import { Label } from "../components/Label.tsx";
-import { Select } from "../components/Select.tsx";
-import { Error, error, showDismissButton } from "./Error.tsx";
+
+import { Client, StorageMemory } from "mtkruto/mod.ts";
+import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
+
 import {
   serializeGramjs,
   serializeMtcute,
@@ -14,14 +12,19 @@ import {
   serializePyrogram,
   serializeTelethon,
 } from "../lib/session_string.ts";
-import { UNREACHABLE } from "mtkruto/1_utilities.ts";
-import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { storedString } from "../lib/stored_signals.tsx";
-import { getHashSignal } from "../lib/hash_signal.ts";
-import { IS_BROWSER } from "$fresh/runtime.ts";
+import { getHashSignal } from "../lib/hash.ts";
 import { Db, SessionString } from "../lib/session_string_generator_db.ts";
-import { autoDismiss } from "./Error.tsx";
-import { setHash } from "../lib/utils.ts";
+import { setHash } from "../lib/hash.ts";
+
+import { Button } from "../components/Button.tsx";
+import { Caption } from "../components/Caption.tsx";
+import { Input } from "../components/Input.tsx";
+import { Label } from "../components/Label.tsx";
+import { Select } from "../components/Select.tsx";
+import { Spinner2 } from "../components/icons/Spinner.tsx";
+
+import { autoDismiss, Error, error, showDismissButton } from "./Error.tsx";
 
 const db = new Db();
 

@@ -1,4 +1,5 @@
 import { Dexie, Table } from "dexie";
+
 import type { Context } from "grammy/mod.ts";
 
 export interface Update {

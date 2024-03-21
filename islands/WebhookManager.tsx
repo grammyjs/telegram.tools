@@ -1,7 +1,11 @@
 import { ComponentChildren, createRef } from "preact";
 import { useCallback, useEffect } from "preact/hooks";
 import { Signal, useSignal } from "@preact/signals";
+
 import * as grammy from "grammy/mod.ts";
+
+import { setHash } from "../lib/hash.ts";
+
 import { Router, useHash } from "../components/Router.tsx";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { Button } from "../components/Button.tsx";
@@ -9,9 +13,9 @@ import { Caption } from "../components/Caption.tsx";
 import { ExternalLink } from "../components/ExternalLink.tsx";
 import { Input } from "../components/Input.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
+
 import { Confirmation, confirmation } from "./Confirmation.tsx";
 import { Error, error } from "./Error.tsx";
-import { setHash } from "../lib/utils.ts";
 
 interface Bot {
   token: string;
@@ -323,19 +327,6 @@ function Manage() {
                 </button>
               )}
             </div>
-            {
-              /* <div class="flex items-center justify-between gap-4 px-2">
-              <span class="text-xs opacity-50">
-                Last updated at {timeAgo(new Date(bot.value!.lastUpdatedAt))}.
-              </span>
-              <button
-                class="text-grammy text-xs"
-                onClick={() => updateBot(bot.value!.token)}
-              >
-                Update Now
-              </button>
-            </div> */
-            }
           </div>
         </>
       );

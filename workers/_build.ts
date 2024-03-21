@@ -1,6 +1,7 @@
 import * as path from "$std/path/mod.ts";
-import * as esbuild from "https://deno.land/x/esbuild@v0.20.1/mod.js";
-import { denoPlugins } from "https://deno.land/x/esbuild_deno_loader@0.8.5/mod.ts";
+
+import * as esbuild from "esbuild/mod.js";
+import { denoPlugins } from "esbuild_deno_loader/mod.ts";
 
 const importMapURL = path.toFileUrl(path.join(Deno.cwd(), "deno.json"))
   .toString();

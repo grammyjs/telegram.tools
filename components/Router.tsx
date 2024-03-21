@@ -1,8 +1,9 @@
+import { IS_BROWSER } from "$fresh/runtime.ts";
 import { ComponentChildren, createContext } from "preact";
 import { useContext, useEffect } from "preact/hooks";
 import { useSignal } from "@preact/signals";
-import { IS_BROWSER } from "$fresh/runtime.ts";
-import { setHash } from "../lib/utils.ts";
+
+import { setHash } from "../lib/hash.ts";
 
 const hash = createContext("");
 const HashProvider = hash.Provider;

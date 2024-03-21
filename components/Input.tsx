@@ -1,6 +1,7 @@
-import { JSX } from "preact";
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { cn } from "../lib/utils.ts";
+import { JSX } from "preact";
+
+import { cn } from "../lib/cn.ts";
 
 export function Input(props: JSX.HTMLAttributes<HTMLInputElement>) {
   return (

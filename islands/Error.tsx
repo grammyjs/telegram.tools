@@ -1,7 +1,8 @@
-import { ComponentChildren } from "preact";
-import { effect, signal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { ComponentChildren } from "preact";
+import { useEffect } from "preact/hooks";
+import { effect, signal } from "@preact/signals";
+
 import { Button } from "../components/Button.tsx";
 
 export const error = signal<

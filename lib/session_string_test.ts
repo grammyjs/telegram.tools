@@ -1,11 +1,12 @@
 import { assertEquals } from "$std/assert/mod.ts";
-import { deserializeMtkruto } from "./session_string.ts";
-import { serializeMtcute } from "./session_string.ts";
-import { deserializeTelethon } from "./session_string.ts";
+
 import {
   deserializeGramjs,
+  deserializeMtkruto,
   deserializePyrogram,
+  deserializeTelethon,
   serializeGramjs,
+  serializeMtcute,
   serializePyrogram,
   serializeTelethon,
 } from "./session_string.ts";

@@ -1,5 +1,4 @@
 import { TLRawWriter } from "mtkruto/tl/0_tl_raw_writer.ts";
-import { fromByteArray, parse } from "ipaddr.js";
 import { decodeBase64, encodeBase64 } from "mtkruto/0_deps.ts";
 import { TLRawReader } from "mtkruto/tl/0_tl_raw_reader.ts";
 import { bigIntFromBuffer } from "mtkruto/utilities/0_bigint.ts";
@@ -10,6 +9,7 @@ import {
   rleDecode,
   rleEncode,
 } from "mtkruto/1_utilities.ts";
+import { fromByteArray, parse } from "ipaddr.js";
 
 function writeUint16(value: number, writer: TLRawWriter) {
   writer.write(new Uint8Array(2));
