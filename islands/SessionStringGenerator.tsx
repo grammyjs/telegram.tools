@@ -1,7 +1,7 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { computed, Signal, signal } from "@preact/signals";
 
-import { Client, StorageMemory } from "mtkruto/mod.ts";
+import { Client, StorageMemory, types } from "mtkruto/mod.ts";
 import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 
@@ -189,7 +189,13 @@ export function SessionStringGenerator() {
         class="gap-4 flex flex-col w-full max-w-lg mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
-          generate(library).catch(displayError);
+          generate(library).catch((e) => {
+            if (e instanceof types.Rpc_error) {
+              displayError(e.error_message);
+            } else {
+              displayError(e);
+            }
+          });
         }}
       >
         <Label>

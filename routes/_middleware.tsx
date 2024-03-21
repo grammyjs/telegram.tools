@@ -1,6 +1,6 @@
 import { FreshContext } from "$fresh/server.ts";
 
-const hostname = Deno.env.get("HOSTNAME");
+const hostname = Deno.env.get("__HOSTNAME");
 const HEADER = new TextEncoder().encode(
   "<!--- See something wrong? Let us know in our chat: https://t.me/grammyjs --->",
 );

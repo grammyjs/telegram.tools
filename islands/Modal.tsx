@@ -54,6 +54,7 @@ export function hideModal() {
 }
 
 export function displayError(err: unknown, context?: string) {
+  console.trace(err);
   setModalContent(context ? `${context}: ${err}` : String(err));
 }
 
