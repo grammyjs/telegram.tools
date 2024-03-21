@@ -13,6 +13,7 @@ import {
   deserializePyrogram,
   deserializeTelethon,
 } from "../lib/session_string.ts";
+import { setHash } from "../lib/utils.ts";
 
 const hash = getHashSignal();
 const getString = () => decodeURIComponent(hash.value.slice(1));
@@ -70,8 +71,8 @@ export function SessionStringAnalyzer() {
         <Input
           placeholder="Session string"
           value={string}
-          onKeyUp={(e) => location.hash = e.currentTarget.value}
-          onKeyPress={(e) => location.hash = e.currentTarget.value}
+          onKeyUp={(e) => setHash(e.currentTarget.value)}
+          onKeyPress={(e) => setHash(e.currentTarget.value)}
         />
         <Caption>Enter a session string to analyze.</Caption>
       </Label>

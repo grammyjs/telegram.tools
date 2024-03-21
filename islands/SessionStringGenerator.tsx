@@ -21,6 +21,7 @@ import { getHashSignal } from "../lib/hash_signal.ts";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { Db, SessionString } from "../lib/session_string_generator_db.ts";
 import { autoDismiss } from "./Error.tsx";
+import { setHash } from "../lib/utils.ts";
 
 const db = new Db();
 
@@ -38,14 +39,14 @@ const setEnv = (env: "Production" | "Test") => {
   if (env == "Test") {
     newParts.push("test");
   }
-  location.hash = newParts.sort((a, b) => a.localeCompare(b)).join(",");
+  setHash(newParts.sort((a, b) => a.localeCompare(b)).join(","));
 };
 const setAccountType = (env: "Bot" | "User") => {
   const newParts = getHashParts().filter((v) => v != "user");
   if (env == "User") {
     newParts.push("user");
   }
-  location.hash = newParts.sort((a, b) => a.localeCompare(b)).join(",");
+  setHash(newParts.sort((a, b) => a.localeCompare(b)).join(","));
 };
 const sessionString = signal("");
 const loading = signal(false);
@@ -275,7 +276,7 @@ function LibraryPicker() {
           class="bg-gradient py-3 px-4 rounded-xl border-border border-2 cursor-pointer flex flex-col items-start justify-center"
           onClick={(e) =>
             e.currentTarget == e.target &&
-            (location.hash = `#${v.name.toLowerCase()}`)}
+            (setHash(v.name.toLowerCase()))}
         >
           <span class="text-lg pointer-events-none">{v.name}</span>
           <span class="opacity-50 text-xs">{v.link}</span>

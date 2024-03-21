@@ -11,6 +11,7 @@ import { Input } from "../components/Input.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
 import { Confirmation, confirmation } from "./Confirmation.tsx";
 import { Error, error } from "./Error.tsx";
+import { setHash } from "../lib/utils.ts";
 
 interface Bot {
   token: string;
@@ -25,7 +26,7 @@ async function deleteWebhook(token: string, s: Signal<Bot | null>) {
     const bot = new grammy.Bot(token);
     await bot.api.deleteWebhook();
     s.value && (s.value.url = undefined);
-    location.hash = `#/${token}`;
+    setHash(`/${token}`);
   } catch (err) {
     error.value = `Failed to delete webhook: ${err}`;
   }
@@ -44,7 +45,7 @@ async function setWebhookURL(
     await bot.api.setWebhook(url);
     s.value && (s.value.url = url);
     error.value = "Webhook URL set.";
-    location.hash = `#/${token}`;
+    setHash(`/${token}`);
   } catch (err) {
     let a = err;
     if (err instanceof grammy.GrammyError) {
@@ -107,7 +108,7 @@ function AddBot() {
       class="gap-4 flex flex-col"
       onSubmit={(e) => {
         e.preventDefault();
-        location.hash = `#/${new FormData(e.currentTarget).get("token")}`;
+        setHash(`/${new FormData(e.currentTarget).get("token")}`);
       }}
     >
       <div class="flex flex-col gap-1.5">
@@ -208,7 +209,7 @@ function Manage() {
                       "Are you sure that you want to remove the webhook?",
                     onConfirm: () => {
                       deleteWebhook(bot.value!.token, bot);
-                      location.hash = back;
+                      setHash(back);
                     },
                   }}
               >

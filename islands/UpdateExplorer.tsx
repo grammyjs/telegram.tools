@@ -7,6 +7,7 @@ import { signal, useComputed, useSignal } from "@preact/signals";
 import { storedBoolean } from "../lib/stored_signals.tsx";
 import { useLiveQuerySignal } from "../lib/dexie_live_query_signal.ts";
 import { Db, Update } from "../lib/update_explorer_db.ts";
+import { setHash } from "../lib/utils.ts";
 import { Caption } from "../components/Caption.tsx";
 import { Button } from "../components/Button.tsx";
 import { Input } from "../components/Input.tsx";
@@ -56,7 +57,7 @@ function Home() {
           class="gap-4 flex flex-col"
           onSubmit={(e) => {
             e.preventDefault();
-            location.hash = `#/${new FormData(e.currentTarget).get("token")}`;
+            setHash(`/${new FormData(e.currentTarget).get("token")}`);
           }}
         >
           <div class="flex flex-col gap-1.5">
@@ -216,13 +217,13 @@ function Explorer() {
           if (updates.value.length != UPDATE_LIMIT) {
             break;
           }
-          location.hash = `#/${token}/${page + 1}`;
+          setHash(`/${token}/${page + 1}`);
           break;
         case "ArrowLeft":
           if (page == 0) {
             break;
           }
-          location.hash = `#/${token}/${page - 1}`;
+          setHash(`/${token}/${page - 1}`);
           break;
         case "s":
         case "S":
@@ -325,7 +326,7 @@ function Explorer() {
           {me.value && <>Authorized as @{me.value.username}</>}
         </div>
       </div>
-      <Error onDismiss={() => location.hash = "#"} />
+      <Error onDismiss={() => setHash("#")} />
     </>
   );
 }

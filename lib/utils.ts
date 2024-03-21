@@ -1,5 +1,12 @@
+///<reference lib="dom" />
 import { type ClassValue, clsx } from "https://esm.sh/clsx@2.1.0";
 import { twMerge } from "https://esm.sh/tailwind-merge@2.2.1";
+
+export function setHash(hash: string) {
+  const url = new URL(location.href);
+  url.hash = hash;
+  history.replaceState({}, "", url);
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

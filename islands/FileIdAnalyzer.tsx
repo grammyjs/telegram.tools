@@ -8,6 +8,7 @@ import {
   UniqueFileId,
 } from "../lib/file_id.ts";
 import { Input } from "../components/Input.tsx";
+import { setHash } from "../lib/utils.ts";
 
 export function FileIdAnalyzer() {
   const [fileId, setFileId] = useState(
@@ -20,7 +21,7 @@ export function FileIdAnalyzer() {
       return;
     }
     if (typeof location !== "undefined") {
-      location.hash = fileId;
+      setHash(fileId);
     }
     try {
       setData(deserializeFileId(fileId));

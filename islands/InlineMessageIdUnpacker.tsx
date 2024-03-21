@@ -7,6 +7,7 @@ import { signal, useSignalEffect } from "@preact/signals";
 import { base64DecodeUrlSafe } from "mtkruto/utilities/1_base64.ts";
 import { TLReader } from "mtkruto/tl/3_tl_reader.ts";
 import { id, types } from "mtkruto/2_tl.ts";
+import { setHash } from "../lib/utils.ts";
 
 const hash = getHashSignal();
 const getId = () => decodeURIComponent(hash.value.slice(1));
@@ -63,8 +64,8 @@ export function InlineMessageIdUnpacker() {
         <Input
           placeholder="Inline message ID"
           value={id}
-          onKeyUp={(e) => location.hash = e.currentTarget.value}
-          onKeyPress={(e) => location.hash = e.currentTarget.value}
+          onKeyUp={(e) => setHash("#" + e.currentTarget.value)}
+          onKeyPress={(e) => setHash("#" + e.currentTarget.value)}
         />
         <Caption>Enter an inline message ID to unpack.</Caption>
       </Label>

@@ -2,6 +2,7 @@ import { ComponentChildren, createContext } from "preact";
 import { useContext, useEffect } from "preact/hooks";
 import { useSignal } from "@preact/signals";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { setHash } from "../lib/utils.ts";
 
 const hash = createContext("");
 const HashProvider = hash.Provider;
@@ -32,7 +33,7 @@ export function Router(
       if (e.target instanceof HTMLElement) {
         if (e.target.dataset["route"]) {
           e.preventDefault();
-          location.hash = e.target.dataset["route"];
+          setHash(e.target.dataset["route"]);
           hash.value = e.target.dataset["route"];
         }
       }
