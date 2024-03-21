@@ -1,10 +1,10 @@
-import { error } from "./Error.tsx";
+import { setModalContent } from "./Modal.tsx";
 
 export function Disclaimer() {
   return (
     <button
       onClick={() => {
-        error.value = (
+        setModalContent(
           <ul class="flex flex-col list-disc pl-5 gap-1.5">
             <li>telegram.tools is not affiliated with Telegram.</li>
             <li>
@@ -21,7 +21,7 @@ export function Disclaimer() {
               potentially sign into using the Telegram API app credentials
               provided by them.
             </li>
-          </ul>
+          </ul>,
         );
       }}
     >

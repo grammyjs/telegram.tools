@@ -5,43 +5,70 @@ import { effect, signal } from "@preact/signals";
 
 import { Button } from "../components/Button.tsx";
 
-export const error = signal<
-  null | ComponentChildren | (() => ComponentChildren)
->(null);
-export const showDismissButton = signal(true);
-export const autoDismiss = signal(true);
+export type ModalContent = null | ComponentChildren | (() => ComponentChildren);
+
+const content = signal<ModalContent>(null);
+const showDismissButton = signal(true);
+const autoDismiss = signal(true);
 
 IS_BROWSER && effect(() => {
-  if (error.value == null) {
+  if (content.value == null) {
     showDismissButton.value = true;
     autoDismiss.value = true;
   }
 });
 
 IS_BROWSER && effect(() => {
-  if (error.value != null) {
+  if (content.value != null) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "";
   }
 });
 
-export function Error({ onDismiss }: { onDismiss?: () => void }) {
+export function isModalVisible() {
+  return content.value != null;
+}
+
+export function setModalContent(
+  content_: ModalContent,
+  autoDismiss_?: boolean,
+  showDismissButton_?: boolean,
+) {
+  if (content_ == null) {
+    showDismissButton.value = true;
+    autoDismiss.value = true;
+  } else {
+    if (typeof autoDismiss_ === "boolean") {
+      autoDismiss.value = autoDismiss_;
+    }
+    if (typeof showDismissButton_ === "boolean") {
+      showDismissButton.value = showDismissButton_;
+    }
+  }
+  content.value = content_;
+}
+
+export function hideModal() {
+  setModalContent(null);
+}
+
+export function Modal({ onDismiss }: { onDismiss?: () => void }) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      e.key == "Escape" && (error.value = null);
+      e.key == "Escape" && (content.value = null);
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
-  if (!error.value) {
+  if (!content.value) {
     return null;
   }
   function dismiss() {
     if (onDismiss) {
       onDismiss();
     } else {
-      error.value = null;
+      content.value = null;
     }
   }
   return (
@@ -52,15 +79,15 @@ export function Error({ onDismiss }: { onDismiss?: () => void }) {
     >
       <div class="w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm">
         <div class="flex flex-col gap-4">
-          {typeof error.value === "string"
+          {typeof content.value === "string"
             ? (
               <p>
-                {error.value}
+                {content.value}
               </p>
             )
-            : typeof error.value === "function"
-            ? error.value()
-            : error.value}
+            : typeof content.value === "function"
+            ? content.value()
+            : content.value}
           {showDismissButton.value && (
             <Button
               onClick={dismiss}

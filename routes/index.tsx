@@ -10,7 +10,7 @@ import { FileText } from "../components/icons/FileText.tsx";
 import { At } from "../components/icons/At.tsx";
 import { Key } from "../components/icons/Key.tsx";
 import { Disclaimer } from "../islands/Disclaimer.tsx";
-import { Error } from "../islands/Error.tsx";
+import { Modal } from "../islands/Modal.tsx";
 
 const sections = [
   {
@@ -156,7 +156,7 @@ export default function Home() {
           </a>
         </div>
       </footer>
-      <Error />
+      <Modal />
     </>
   );
 }

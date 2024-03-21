@@ -20,10 +20,10 @@ import * as $Confirmation from "./islands/Confirmation.tsx";
 import * as $ConnectivityTest from "./islands/ConnectivityTest.tsx";
 import * as $Disclaimer from "./islands/Disclaimer.tsx";
 import * as $Dots from "./islands/Dots.tsx";
-import * as $Error from "./islands/Error.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
 import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
+import * as $Modal from "./islands/Modal.tsx";
 import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringAnalyzer from "./islands/SessionStringAnalyzer.tsx";
 import * as $SessionStringGenerator from "./islands/SessionStringGenerator.tsx";
@@ -53,10 +53,10 @@ const manifest = {
     "./islands/ConnectivityTest.tsx": $ConnectivityTest,
     "./islands/Disclaimer.tsx": $Disclaimer,
     "./islands/Dots.tsx": $Dots,
-    "./islands/Error.tsx": $Error,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
     "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,
+    "./islands/Modal.tsx": $Modal,
     "./islands/Select.tsx": $Select,
     "./islands/SessionStringAnalyzer.tsx": $SessionStringAnalyzer,
     "./islands/SessionStringGenerator.tsx": $SessionStringGenerator,

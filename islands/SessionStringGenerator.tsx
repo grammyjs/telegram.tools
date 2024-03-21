@@ -24,7 +24,7 @@ import { Label } from "../components/Label.tsx";
 import { Select } from "../components/Select.tsx";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 
-import { autoDismiss, Error, error, showDismissButton } from "./Error.tsx";
+import { hideModal, Modal, setModalContent } from "./Modal.tsx";
 
 const db = new Db();
 
@@ -112,15 +112,14 @@ const libraries = [
 async function generate(library: ValidLibrary) {
   const generate = () => {
     loading.value = true;
-    error.value = null;
+    hideModal();
     generateSessionString(library).finally(() => {
       loading.value = false;
     });
   };
   const string = await db.strings.get({ account: account.value });
   if (string && "string" in string) {
-    showDismissButton.value = false;
-    error.value = (
+    setModalContent(
       <>
         <p>
           A session string was recently generated for this account. Do you want
@@ -129,13 +128,15 @@ async function generate(library: ValidLibrary) {
         <Button
           onClick={() => {
             fromStorage(string.string, library);
-            error.value = null;
+            hideModal();
           }}
         >
           Yes
         </Button>
         <Button muted onClick={generate}>No, regenerate</Button>
-      </>
+      </>,
+      undefined,
+      false,
     );
     return;
   }
@@ -157,7 +158,7 @@ export function SessionStringGenerator() {
         <div class="gap-1.5 text-xs opacity-50 flex w-full items-center justify-center max-w-lg mx-auto">
           <Spinner2 size={10} /> <span>Generating session string</span>
         </div>
-        <Error />
+        <Modal />
       </>
     );
   }
@@ -179,14 +180,14 @@ export function SessionStringGenerator() {
           <Button
             onClick={() => {
               navigator.clipboard.writeText(sessionString.value).then(() => {
-                error.value = "Copied to clipboard.";
+                setModalContent("Copied to clipboard.");
               });
             }}
           >
             Copy
           </Button>
         </div>
-        <Error />
+        <Modal />
       </>
     );
   }
@@ -265,7 +266,7 @@ export function SessionStringGenerator() {
           </Caption>
         </Label>
       </form>
-      <Error />
+      <Modal />
     </>
   );
 }
@@ -329,7 +330,7 @@ async function fromStorage(
       );
       break;
     default:
-      error.value = "The chosen library is currently not supported.";
+      setModalContent("The chosen library is currently not supported.");
       return;
   }
 }
@@ -339,15 +340,15 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
   const apiHash_ = apiHash.value;
   const account_ = account.value;
   if (isNaN(apiId_) || !apiId_ || !apiHash_) {
-    error.value = "Invalid API credentials.";
+    setModalContent("Invalid API credentials.");
     return;
   }
   if (!account_) {
-    error.value = "Invalid account details.";
+    setModalContent("Invalid account details.");
     return;
   }
   if (accountType.value != "Bot" && !account.value.startsWith("+")) {
-    error.value = "The phone number must start with a plus sign.";
+    setModalContent("The phone number must start with a plus sign.");
     return;
   }
 
@@ -356,8 +357,6 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
     initialDc: environment.value == "Test" ? "2-test" : undefined,
   });
 
-  autoDismiss.value = false;
-  showDismissButton.value = false;
   let firstCodeAttempt_ = true;
   const firstCodeAttempt = signal(true);
   let firstPasswordAttempt_ = true;
@@ -370,20 +369,21 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
           if (!firstCodeAttempt_ && firstCodeAttempt.value) {
             firstCodeAttempt.value = false;
           }
-          error.value = null;
-          autoDismiss.value = false;
-          showDismissButton.value = false;
-          error.value = () => (
-            <Code
-              first={firstCodeAttempt}
-              resolve={(code) => {
-                resolve(code);
-              }}
-              cancel={() => {
-                error.value = null;
-                reject();
-              }}
-            />
+          setModalContent(
+            () => (
+              <Code
+                first={firstCodeAttempt}
+                resolve={(code) => {
+                  resolve(code);
+                }}
+                cancel={() => {
+                  hideModal();
+                  reject();
+                }}
+              />
+            ),
+            false,
+            false,
           );
           firstCodeAttempt_ = false;
         }),
@@ -392,26 +392,28 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
           if (!firstPasswordAttempt_ && firstPasswordAttempt.value) {
             firstPasswordAttempt.value = false;
           }
-          autoDismiss.value = false;
-          showDismissButton.value = false;
-          error.value = () => (
-            <Password
-              hint={hint}
-              first={firstPasswordAttempt}
-              resolve={(code) => {
-                resolve(code);
-              }}
-              cancel={() => {
-                error.value = null;
-                reject();
-              }}
-            />
+          setModalContent(
+            () => (
+              <Password
+                hint={hint}
+                first={firstPasswordAttempt}
+                resolve={(code) => {
+                  resolve(code);
+                }}
+                cancel={() => {
+                  hideModal();
+                  reject();
+                }}
+              />
+            ),
+            false,
+            false,
           );
           firstPasswordAttempt_ = false;
         }),
     },
   );
-  error.value = null;
+  hideModal();
 
   const dc = await client.storage.getDc();
   const authKey = await client.storage.getAuthKey();
@@ -457,7 +459,7 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
       sessionString.value = await client.exportAuthString();
       break;
     default:
-      error.value = "The chosen library is currently not supported.";
+      setModalContent("The chosen library is currently not supported.");
       return;
   }
 

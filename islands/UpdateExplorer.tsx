@@ -18,7 +18,8 @@ import { Router, useHash } from "../components/Router.tsx";
 import { Spinner2 } from "../components/icons/Spinner.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
 
-import { Error, error } from "./Error.tsx";
+import { Modal, setModalContent } from "./Modal.tsx";
+import { isModalVisible } from "./Modal.tsx";
 
 const dbs = new Map<string, Db>();
 
@@ -147,7 +148,7 @@ function Explorer() {
           me.value = e.data.me;
           break;
         case "error":
-          error.value = e.data.error;
+          setModalContent(e.data.error);
           break;
         case "sound":
           sounds.value && new Audio("/update-explorer/pulse.wav").play();
@@ -321,7 +322,7 @@ function Explorer() {
       </main>
       <div class="flex gap-1 items-center justify-center fixed bottom-0 text-xs py-2 bg-background w-full">
         <div class="opacity-50 flex gap-1.5 items-center">
-          {!me.value && !error.value &&
+          {!me.value && !isModalVisible() &&
             (
               <>
                 <Spinner2 size={10} /> Authorizing
@@ -330,7 +331,7 @@ function Explorer() {
           {me.value && <>Authorized as @{me.value.username}</>}
         </div>
       </div>
-      <Error onDismiss={() => setHash("#")} />
+      <Modal onDismiss={() => setHash("#")} />
     </>
   );
 }

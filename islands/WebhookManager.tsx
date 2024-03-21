@@ -15,7 +15,7 @@ import { Input } from "../components/Input.tsx";
 import { ClientOnly } from "../components/ClientOnly.tsx";
 
 import { Confirmation, confirmation } from "./Confirmation.tsx";
-import { Error, error } from "./Error.tsx";
+import { hideModal, Modal, setModalContent } from "./Modal.tsx";
 
 interface Bot {
   token: string;
@@ -32,7 +32,7 @@ async function deleteWebhook(token: string, s: Signal<Bot | null>) {
     s.value && (s.value.url = undefined);
     setHash(`/${token}`);
   } catch (err) {
-    error.value = `Failed to delete webhook: ${err}`;
+    setModalContent(`Failed to delete webhook: ${err}`);
   }
 }
 async function setWebhookURL(
@@ -41,21 +41,21 @@ async function setWebhookURL(
   s: Signal<Bot | null>,
 ) {
   if (new URL(url).protocol != "https:") {
-    error.value = "Only HTTPS URLs are allowed.";
+    setModalContent("Only HTTPS URLs are allowed.");
     return;
   }
   try {
     const bot = new grammy.Bot(token);
     await bot.api.setWebhook(url);
     s.value && (s.value.url = url);
-    error.value = "Webhook URL set.";
+    setModalContent("Webhook URL set.");
     setHash(`/${token}`);
   } catch (err) {
     let a = err;
     if (err instanceof grammy.GrammyError) {
       a = err.description;
     }
-    error.value = `Failed to set webhook URL: ${a}`;
+    setModalContent(`Failed to set webhook URL: ${a}`);
   }
 }
 async function updateAllowedUpdates(
@@ -72,13 +72,13 @@ async function updateAllowedUpdates(
     });
 
     s.value && (s.value.allowedUpdates = allowedUpdates);
-    error.value = "Changes saved.";
+    setModalContent("Changes saved.");
   } catch (err) {
     let a = err;
     if (err instanceof grammy.GrammyError) {
       a = err.description;
     }
-    error.value = `Failed to save changes: ${a}`;
+    setModalContent(`Failed to save changes: ${a}`);
   }
 }
 
@@ -99,7 +99,7 @@ export function WebhookManager() {
           </div>
 
           <Confirmation />
-          <Error />
+          <Modal />
         </>
       )}
     </ClientOnly>
