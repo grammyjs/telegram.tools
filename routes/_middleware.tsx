@@ -1,10 +1,16 @@
 import { FreshContext } from "$fresh/server.ts";
 
+const hostname = Deno.env.get("HOSTNAME");
 const HEADER = new TextEncoder().encode(
   "<!--- See something wrong? Let us know in our chat: https://t.me/grammyjs --->",
 );
 
 export async function handler(req: Request, ctx: FreshContext) {
+  const url = new URL(req.url);
+  if (hostname && url.hostname != hostname) {
+    url.hostname = hostname;
+    return Response.redirect(url);
+  }
   try {
     const res = await ctx.next();
     if (
