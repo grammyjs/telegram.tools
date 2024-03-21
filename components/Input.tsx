@@ -15,6 +15,7 @@ export function Input(props: JSX.HTMLAttributes<HTMLInputElement>) {
         "bg-foreground-transparent placeholder:(text-foreground opacity-[.55]) rounded-lg w-full px-3 py-1.5 focus:(outline-none)",
         props.class,
       )}
+      type={props.type ?? "text"}
     />
   );
 }

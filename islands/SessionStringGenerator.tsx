@@ -1,5 +1,5 @@
 import { Client, StorageMemory } from "mtkruto/mod.ts";
-import { Signal, signal } from "@preact/signals";
+import { computed, Signal, signal } from "@preact/signals";
 import { Button } from "../components/Button.tsx";
 import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
@@ -25,13 +25,49 @@ import { autoDismiss } from "./Error.tsx";
 const db = new Db();
 
 const hash = getHashSignal();
+const getHashParts = () => {
+  const parts = hash.value.toLowerCase().slice(1).split(",");
+  if (parts.length > 3) {
+    return [];
+  } else {
+    return parts;
+  }
+};
+const setEnv = (env: "Production" | "Test") => {
+  const newParts = getHashParts().filter((v) => v != "test");
+  if (env == "Test") {
+    newParts.push("test");
+  }
+  location.hash = newParts.sort((a, b) => a.localeCompare(b)).join(",");
+};
+const setAccountType = (env: "Bot" | "User") => {
+  const newParts = getHashParts().filter((v) => v != "user");
+  if (env == "User") {
+    newParts.push("user");
+  }
+  location.hash = newParts.sort((a, b) => a.localeCompare(b)).join(",");
+};
 const sessionString = signal("");
 const loading = signal(false);
 
 const apiId = storedString("", "string-session-generator_apiId");
 const apiHash = storedString("", "string-session-generator_apiHash");
-const environment = signal<"Production" | "Test">("Production");
-const accountType = signal<"Bot" | "User">("Bot");
+const environment = computed<"Production" | "Test">(() => {
+  const parts = getHashParts();
+  if (parts.length == 1) {
+    return "Production";
+  } else {
+    return parts.includes("test") ? "Test" : "Production";
+  }
+});
+const accountType = computed<"Bot" | "User">(() => {
+  const parts = getHashParts();
+  if (parts.length == 1) {
+    return "Bot";
+  } else {
+    return parts.includes("user") ? "User" : "Bot";
+  }
+});
 const account = signal("");
 
 const validLibraries = [
@@ -105,7 +141,8 @@ export function SessionStringGenerator() {
   if (!IS_BROWSER) {
     return null;
   }
-  const library = hash.value.toLowerCase().slice(1);
+  const parts = getHashParts();
+  const library = parts[0];
   if (!isValidLibrary(library)) {
     return <LibraryPicker />;
   }
@@ -151,7 +188,13 @@ export function SessionStringGenerator() {
   }
   return (
     <>
-      <div class="gap-4 flex flex-col w-full max-w-lg mx-auto">
+      <form
+        class="gap-4 flex flex-col w-full max-w-lg mx-auto"
+        onSubmit={(e) => {
+          e.preventDefault();
+          generate(library);
+        }}
+      >
         <Label>
           <Caption>
             Environment
@@ -162,7 +205,7 @@ export function SessionStringGenerator() {
               "Production",
               "Test",
             ]}
-            onChange={(v) => environment.value = v}
+            onChange={(v) => setEnv(v)}
           />
         </Label>
         <Label>
@@ -194,7 +237,7 @@ export function SessionStringGenerator() {
               "User",
             ]}
             value={accountType.value}
-            onChange={(v) => accountType.value = v}
+            onChange={(v) => setAccountType(v)}
           />
         </Label>
         <Label>
@@ -204,12 +247,12 @@ export function SessionStringGenerator() {
               ? "Bot token"
               : "Phone number in international format"}
             value={account.value}
+            required
             onChange={(e) => account.value = e.currentTarget.value}
-            onKeyDown={(e) => e.key == "Enter" && generate(library)}
           />
         </Label>
         <Label>
-          <Button onClick={() => generate(library)}>
+          <Button>
             Next
           </Button>
           <Caption>
@@ -217,7 +260,7 @@ export function SessionStringGenerator() {
             to Telegram.
           </Caption>
         </Label>
-      </div>
+      </form>
       <Error />
     </>
   );
@@ -235,8 +278,7 @@ function LibraryPicker() {
             (location.hash = `#${v.name.toLowerCase()}`)}
         >
           <span class="text-lg pointer-events-none">{v.name}</span>
-
-          {v.link}
+          <span class="opacity-50 text-xs">{v.link}</span>
         </button>
       ))}
     </div>
@@ -504,6 +546,7 @@ function Password(
     >
       <Label>
         <Input
+          type="password"
           name="password"
           placeholder={hint || "Password"}
           pattern=".+"
