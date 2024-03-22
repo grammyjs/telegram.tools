@@ -9,8 +9,6 @@ import { Repeat } from "../components/icons/Repeat.tsx";
 import { FileText } from "../components/icons/FileText.tsx";
 import { At } from "../components/icons/At.tsx";
 import { Key } from "../components/icons/Key.tsx";
-import { Disclaimer } from "../islands/Disclaimer.tsx";
-import { Modal } from "../islands/Modal.tsx";
 
 const sections = [
   {
@@ -110,7 +108,6 @@ const sections = [
         icon: <Filter />,
         name: "Filter Query Browser",
         description: "Browse through grammY\u2019s filter queries.",
-        disabled: true,
       },
     ],
   },
@@ -133,7 +130,7 @@ export default function Home() {
                   title={v.name}
                   description={v.description}
                   icon={v.icon}
-                  disabled={"disabled" in v}
+                  disabled={"disabled" in v && v.disabled === false}
                 />
               ))}
             </div>
@@ -146,7 +143,9 @@ export default function Home() {
           {new Date().getFullYear()} grammyjs
         </span>
         <div class="flex gap-5 text-grammy flex-wrap">
-          <Disclaimer />
+          <a href="/disclaimer">
+            Disclaimer
+          </a>
           <a
             href="https://github.com/grammyjs/telegram.tools"
             target="_blank"
@@ -155,7 +154,6 @@ export default function Home() {
           </a>
         </div>
       </footer>
-      <Modal />
     </>
   );
 }

@@ -6,6 +6,7 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_middleware from "./routes/_middleware.tsx";
 import * as $connectivity_test from "./routes/connectivity-test.tsx";
+import * as $disclaimer from "./routes/disclaimer.tsx";
 import * as $file_id_analyzer from "./routes/file-id-analyzer.tsx";
 import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
 import * as $index from "./routes/index.tsx";
@@ -19,7 +20,6 @@ import * as $webhook_manager from "./routes/webhook-manager.tsx";
 import * as $Alert from "./islands/Alert.tsx";
 import * as $Confirmation from "./islands/Confirmation.tsx";
 import * as $ConnectivityTest from "./islands/ConnectivityTest.tsx";
-import * as $Disclaimer from "./islands/Disclaimer.tsx";
 import * as $Dots from "./islands/Dots.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
@@ -39,6 +39,7 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_middleware.tsx": $_middleware,
     "./routes/connectivity-test.tsx": $connectivity_test,
+    "./routes/disclaimer.tsx": $disclaimer,
     "./routes/file-id-analyzer.tsx": $file_id_analyzer,
     "./routes/filter-query-browser.tsx": $filter_query_browser,
     "./routes/index.tsx": $index,
@@ -54,7 +55,6 @@ const manifest = {
     "./islands/Alert.tsx": $Alert,
     "./islands/Confirmation.tsx": $Confirmation,
     "./islands/ConnectivityTest.tsx": $ConnectivityTest,
-    "./islands/Disclaimer.tsx": $Disclaimer,
     "./islands/Dots.tsx": $Dots,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
