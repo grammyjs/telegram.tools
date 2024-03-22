@@ -198,33 +198,34 @@ export function SessionStringConverter() {
           />
           {!inputValid.value && <Caption>Choose different formats.</Caption>}
         </Label>
-        <div class="w-full border-t border-border"></div>
-        <Label>
-          {needsUserDetails.value && (
-            <>
-              <Caption>Account Type</Caption>
-              <Select
-                value={accountType.value}
-                values={["Bot", "User"]}
-                onChange={(v) => accountType.value = v}
-              />
-              <Input
-                placeholder="User ID"
-                value={userId.value}
-                onChange={(e) => userId.value = e.currentTarget.value}
-              />
-            </>
-          )}
-          {needsApiId.value && (
-            <Input
-              placeholder="API ID"
-              value={apiId.value}
-              onChange={(e) => apiId.value = e.currentTarget.value}
-            />
-          )}
-        </Label>
         {inputValid.value && (
           <>
+            <div class="w-full border-t border-border"></div>
+            <Label>
+              {needsUserDetails.value && (
+                <>
+                  <Caption>Account Type</Caption>
+                  <Select
+                    value={accountType.value}
+                    values={["Bot", "User"]}
+                    onChange={(v) => accountType.value = v}
+                  />
+                  <Input
+                    placeholder="User ID"
+                    value={userId.value}
+                    onChange={(e) => userId.value = e.currentTarget.value}
+                  />
+                </>
+              )}
+              {needsApiId.value && (
+                <Input
+                  placeholder="API ID"
+                  value={apiId.value}
+                  onChange={(e) => apiId.value = e.currentTarget.value}
+                />
+              )}
+            </Label>
+
             <Label>
               <Caption>Input</Caption>
               <Input
