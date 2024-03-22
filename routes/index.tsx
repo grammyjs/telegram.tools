@@ -14,8 +14,8 @@ import { Modal } from "../islands/Modal.tsx";
 
 const sections = [
   {
-    name: "Unlisted",
-    description: "Tools that don’t fit in a specific section.",
+    name: "Connectivity",
+    description: "Tools to test your connectivity.",
     tools: [
       {
         href: "/connectivity-test",
