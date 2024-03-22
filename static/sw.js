@@ -4,7 +4,7 @@ importScripts(
 
 workbox.routing.registerRoute(
   ({ url }) =>
-    url.hostname == "durov.deno.dev" &&
+    url.hostname == "telegram.tools" &&
     (url.pathname.startsWith("/fonts/") || url.pathname.startsWith("/MTKruto")),
   new workbox.strategies.CacheFirst(),
 );
