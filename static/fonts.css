@@ -2,7 +2,7 @@
   font-family: InterVariable;
   font-style: normal;
   font-weight: 100 900;
-  font-display: swap;
+  font-display: block;
   src: url("/fonts/InterVariable.woff2") format("woff2");
   font-feature-settings: 'zero';
 }
@@ -10,13 +10,13 @@
   font-family: InterVariable;
   font-style: italic;
   font-weight: 100 900;
-  font-display: swap;
+  font-display: block;
   src: url("/fonts/InterVariable-Italic.woff2") format("woff2");
 }
 
 /* source-code-pro-regular - cyrillic_cyrillic-ext_latin_latin-ext */
 @font-face {
-  font-display: swap;
+  font-display: block;
   font-family: "Source Code Pro";
   font-style: normal;
   font-weight: 400;
