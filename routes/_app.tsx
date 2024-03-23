@@ -17,9 +17,9 @@ export default function App({ Component, url }: PageProps) {
       </head>
       <body
         class="font-inter bg-background text-foreground select-none"
-        f-client-nav
+        // f-client-nav
       >
-        <Partial name="body">
+        {/* <Partial name="body"> */}
           {["/update-explorer", "/connectivity-test"].includes(url.pathname)
             ? <Component />
             : (
@@ -27,7 +27,7 @@ export default function App({ Component, url }: PageProps) {
                 <Component />
               </main>
             )}
-        </Partial>
+        {/* </Partial> */}
       </body>
     </html>
   );
