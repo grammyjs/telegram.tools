@@ -308,5 +308,7 @@ export function deserializeMtkruto(string: string): CommonSessionStringFormat {
   const reader = new TLRawReader(rleDecode(base64DecodeUrlSafe(string)));
   const dc = reader.readString();
   const authKey = reader.readBytes();
-  return { dc, authKey };
+  const isBot = reader.read(1)[0] == 1;
+  const userId = Number(reader.readInt64());
+  return { dc, authKey, isBot, userId };
 }
