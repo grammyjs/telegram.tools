@@ -1,5 +1,6 @@
 import { type PageProps } from "$fresh/server.ts";
-import { Partial } from "$fresh/runtime.ts";
+
+const metricsSnippet = Deno.env.get("METRICS_SNIPPET");
 
 export default function App({ Component, url }: PageProps) {
   return (
@@ -14,19 +15,20 @@ export default function App({ Component, url }: PageProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/fonts.css" />
         <link rel="stylesheet" href="/main.css" />
+        {metricsSnippet
+          ? <script dangerouslySetInnerHTML={{ __html: metricsSnippet }} />
+          : null}
       </head>
-      <body
-        class="font-inter bg-background text-foreground select-none"
-        // f-client-nav
+      <body class="font-inter bg-background text-foreground select-none" // f-client-nav
       >
         {/* <Partial name="body"> */}
-          {["/update-explorer", "/connectivity-test"].includes(url.pathname)
-            ? <Component />
-            : (
-              <main class="mx-auto w-full max-w-[900px] p-5 xl:(p-10) flex flex-col">
-                <Component />
-              </main>
-            )}
+        {["/update-explorer", "/connectivity-test"].includes(url.pathname)
+          ? <Component />
+          : (
+            <main class="mx-auto w-full max-w-[900px] p-5 xl:(p-10) flex flex-col">
+              <Component />
+            </main>
+          )}
         {/* </Partial> */}
       </body>
     </html>
