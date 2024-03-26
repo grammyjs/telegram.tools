@@ -1,5 +1,6 @@
 :root {
   --background: #fff;
+  --background-transparent: #fff1;
   --foreground: #000;
   --foreground-transparent: #0001;
   --grammy: #009dca;
@@ -12,6 +13,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #090909;
+    --background-transparent: #09090911;
     --foreground: #fff;
     --foreground-transparent: #fff1;
     --grammy: #009dca;

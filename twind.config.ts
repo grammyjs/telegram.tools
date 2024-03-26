@@ -13,6 +13,7 @@ export default {
         },
         colors: {
           background: "var(--background)",
+          "background-transparent": "var(--background-transparent)",
           foreground: "var(--foreground)",
           "foreground-transparent": "var(--foreground-transparent)",
           grammy: "var(--grammy)",

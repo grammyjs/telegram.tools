@@ -1,4 +1,5 @@
 import { type PageProps } from "$fresh/server.ts";
+import { CookieNotice } from "../islands/CookieNotice.tsx";
 import { cn } from "../lib/cn.ts";
 
 const metricsSnippet = Deno.env.get("METRICS_SNIPPET");
@@ -26,10 +27,9 @@ export default function App({ Component, url }: PageProps) {
       <body
         class={cn(
           "font-inter bg-background text-foreground select-none",
-          layout && "p-5 xl:p-10",
-        )} // f-client-nav
+          layout && "p-5",
+        )}
       >
-        {/* <Partial name="body"> */}
         {layout
           ? (
             <main class="mx-auto w-full max-w-[900px] flex flex-col">
@@ -37,7 +37,7 @@ export default function App({ Component, url }: PageProps) {
             </main>
           )
           : <Component />}
-        {/* </Partial> */}
+        {metricsSnippet && <CookieNotice />}
       </body>
     </html>
   );
