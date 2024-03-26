@@ -214,7 +214,7 @@ function TestView() {
         ))}
       </main>
       {
-        <div class="bg-gradient-to-t fixed bottom-0 p-5 from-[#0002] to-[#0000] w-full dark:(from-[#aaa1] to-[#fff0])">
+        <div class="bg-gradient-to-t fixed bottom-0 left-0 p-5 from-[#0002] to-[#0000] w-full dark:(from-[#aaa1] to-[#fff0])">
           <div class="max-w-sm mx-auto">
             <Button onClick={restart}>
               {(Object.values(tests.value).length == dcsToCheck.value.size &&

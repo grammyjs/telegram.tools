@@ -58,26 +58,24 @@ export function UpdateExplorer() {
 
 function Home() {
   return (
-    <main class="mx-auto w-full max-w-[900px] p-5 xl:p-10">
-      <div class="w-full max-w-lg mx-auto">
-        <form
-          class="gap-4 flex flex-col"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setHash(`/${new FormData(e.currentTarget).get("token")}`);
-          }}
-        >
-          <div class="flex flex-col gap-1.5">
-            <Input placeholder="Bot token" name="token" required />
-            <Caption>
-              The bot tokens you enter are stored in your browser and used only
-              in requests made directly to Telegram.
-            </Caption>
-          </div>
-          <Button>Open Update Explorer</Button>
-        </form>
-        <div class=""></div>
-      </div>
+    <main class="w-full max-w-lg mx-auto">
+      <form
+        class="gap-4 flex flex-col"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setHash(`/${new FormData(e.currentTarget).get("token")}`);
+        }}
+      >
+        <div class="flex flex-col gap-1.5">
+          <Input placeholder="Bot token" name="token" required />
+          <Caption>
+            The bot tokens you enter are stored in your browser and used only in
+            requests made directly to Telegram.
+          </Caption>
+        </div>
+        <Button>Open Update Explorer</Button>
+      </form>
+      <div class=""></div>
     </main>
   );
 }

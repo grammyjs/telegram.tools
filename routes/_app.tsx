@@ -1,8 +1,12 @@
 import { type PageProps } from "$fresh/server.ts";
+import { cn } from "../lib/cn.ts";
 
 const metricsSnippet = Deno.env.get("METRICS_SNIPPET");
 
 export default function App({ Component, url }: PageProps) {
+  const layout = !["/update-explorer", "/connectivity-test"].includes(
+    url.pathname,
+  );
   return (
     <html>
       <head>
@@ -19,16 +23,20 @@ export default function App({ Component, url }: PageProps) {
           ? <script dangerouslySetInnerHTML={{ __html: metricsSnippet }} />
           : null}
       </head>
-      <body class="font-inter bg-background text-foreground select-none" // f-client-nav
+      <body
+        class={cn(
+          "font-inter bg-background text-foreground select-none",
+          layout && "p-5 xl:p-10",
+        )} // f-client-nav
       >
         {/* <Partial name="body"> */}
-        {["/update-explorer", "/connectivity-test"].includes(url.pathname)
-          ? <Component />
-          : (
-            <main class="mx-auto w-full max-w-[900px] p-5 xl:(p-10) flex flex-col">
+        {layout
+          ? (
+            <main class="mx-auto w-full max-w-[900px] flex flex-col">
               <Component />
             </main>
-          )}
+          )
+          : <Component />}
         {/* </Partial> */}
       </body>
     </html>
