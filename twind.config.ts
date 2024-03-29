@@ -20,6 +20,8 @@ export default {
           "button-text": "var(--button-text)",
           border: "var(--border)",
           "button-background": "var(--button-background)",
+          "danger-background": "var(--danger-background)",
+          "danger-foreground": "var(--danger-foreground)",
         },
         backgroundImage: {
           "gradient": "var(--gradient)",

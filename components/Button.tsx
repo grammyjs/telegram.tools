@@ -13,7 +13,7 @@ export function Button(
       disabled={!IS_BROWSER || props.disabled}
       class={`${
         props.danger
-          ? "bg-border text-red-500"
+          ? "bg-danger-background text-danger-foreground"
           : props.muted
           ? "bg-border"
           : "bg-button-background text-button-text"

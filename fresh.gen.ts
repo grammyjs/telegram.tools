@@ -11,6 +11,7 @@ import * as $file_id_analyzer from "./routes/file-id-analyzer.tsx";
 import * as $filter_query_browser from "./routes/filter-query-browser.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $inline_message_id_unpacker from "./routes/inline-message-id-unpacker.tsx";
+import * as $k from "./routes/k.tsx";
 import * as $session_string_analyzer from "./routes/session-string-analyzer.tsx";
 import * as $session_string_converter from "./routes/session-string-converter.tsx";
 import * as $session_string_generator from "./routes/session-string-generator.tsx";
@@ -25,6 +26,7 @@ import * as $Dots from "./islands/Dots.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
 import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
+import * as $K from "./islands/K.tsx";
 import * as $Modal from "./islands/Modal.tsx";
 import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringAnalyzer from "./islands/SessionStringAnalyzer.tsx";
@@ -45,6 +47,7 @@ const manifest = {
     "./routes/filter-query-browser.tsx": $filter_query_browser,
     "./routes/index.tsx": $index,
     "./routes/inline-message-id-unpacker.tsx": $inline_message_id_unpacker,
+    "./routes/k.tsx": $k,
     "./routes/session-string-analyzer.tsx": $session_string_analyzer,
     "./routes/session-string-converter.tsx": $session_string_converter,
     "./routes/session-string-generator.tsx": $session_string_generator,
@@ -61,6 +64,7 @@ const manifest = {
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
     "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,
+    "./islands/K.tsx": $K,
     "./islands/Modal.tsx": $Modal,
     "./islands/Select.tsx": $Select,
     "./islands/SessionStringAnalyzer.tsx": $SessionStringAnalyzer,

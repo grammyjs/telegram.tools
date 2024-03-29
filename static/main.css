@@ -8,6 +8,8 @@
   --border: #eee;
   --gradient: linear-gradient(120deg, var(--background) 45%, #f5f5f5);
   --button-background: #dbf7ff;
+  --danger-background: #7e0b0b;
+  --danger-foreground: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
