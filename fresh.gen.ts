@@ -26,7 +26,6 @@ import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
 import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
 import * as $Modal from "./islands/Modal.tsx";
-import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringAnalyzer from "./islands/SessionStringAnalyzer.tsx";
 import * as $SessionStringConverter from "./islands/SessionStringConverter.tsx";
 import * as $SessionStringGenerator from "./islands/SessionStringGenerator.tsx";
@@ -62,7 +61,6 @@ const manifest = {
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
     "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,
     "./islands/Modal.tsx": $Modal,
-    "./islands/Select.tsx": $Select,
     "./islands/SessionStringAnalyzer.tsx": $SessionStringAnalyzer,
     "./islands/SessionStringConverter.tsx": $SessionStringConverter,
     "./islands/SessionStringGenerator.tsx": $SessionStringGenerator,

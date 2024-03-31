@@ -1,4 +1,5 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { ComponentChildren } from "preact";
 import { signal, useSignal } from "@preact/signals";
 
 import type { DC } from "mtkruto/mod.ts";
@@ -10,7 +11,6 @@ import { Button } from "../components/Button.tsx";
 import { Spinner } from "../components/icons/Spinner.tsx";
 
 import { Alert } from "./Alert.tsx";
-import { Select } from "./Select.tsx";
 
 const localStorage = prefixedLocalStorage("connectivity-test");
 
@@ -274,4 +274,29 @@ function startTest(all = false) {
     const authKey = localStorage.getItem(dc);
     worker.postMessage([dc, authKey ? decodeHex(authKey) : null]);
   }
+}
+
+export function Select(
+  { text, caption, checked, onChange }: {
+    text: ComponentChildren;
+    caption: string;
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+  },
+) {
+  return (
+    <div
+      class={`flex cursor-pointer relative items-start gap-2 px-3 py-2 ${
+        checked ? "border-grammy border-2" : "border-border border-2"
+      } rounded-xl shadow-sm bg-gradient`}
+      onClick={() => onChange(!checked)}
+      tabIndex={0}
+      onKeyDown={(e) => e.key == "Enter" && onChange(!checked)}
+    >
+      <div class="flex flex-col">
+        <div>{text}</div>
+        <div class="text-[10px] opacity-50">{caption}</div>
+      </div>
+    </div>
+  );
 }
