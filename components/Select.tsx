@@ -2,6 +2,8 @@ import { useEffect, useState } from "preact/hooks";
 
 import { cn } from "../lib/cn.ts";
 
+import { Check } from "./icons/Check.tsx";
+
 export function Select<T extends string>(
   { value, values, onChange, nameMap }: {
     value: T;
@@ -95,8 +97,10 @@ export function Select<T extends string>(
         />
       </div>
       <div
-        class={`bg-background z-[100] absolute top-[calc(100%+0rem)] w-full border border-border rounded-lg rounded-t-none p-1 shadow-sm ${
-          focused ? "block" : "hidden"
+        class={`bg-background z-[100] absolute duration-100 top-[calc(100%+0rem)] w-full border border-border rounded-lg rounded-t-none px-1 py-1.5 shadow-slct ${
+          focused
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-[-5px] pointer-events-none"
         }`}
       >
         {values.map((v) => (
@@ -104,8 +108,7 @@ export function Select<T extends string>(
             type="button"
             tabIndex={-1}
             class={cn(
-              "px-3 py-1.5 w-full focus:(bg-border outline-none) rounded-lg text-left border-none cursor-default flex items-center justify-between",
-              value == v && "font-semibold",
+              "px-3 py-1.5 w-full rounded-lg focus:(bg-border outline-none) cursor-default text-left border-none flex items-center justify-between duration-75 transition-opacity",
               active == v && "bg-border",
             )}
             onMouseEnter={(e) => {
@@ -114,6 +117,7 @@ export function Select<T extends string>(
             data-value={v}
           >
             <span data-value={v}>{nameMap?.[v] ?? v}</span>
+            {value == v && <Check />}
           </button>
         ))}
       </div>

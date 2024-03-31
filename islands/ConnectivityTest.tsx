@@ -1,6 +1,5 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { useState } from "preact/hooks";
-import { signal } from "@preact/signals";
+import { signal, useSignal } from "@preact/signals";
 
 import type { DC } from "mtkruto/mod.ts";
 
@@ -93,7 +92,7 @@ IS_BROWSER && addEventListener("keydown", (e) => {
   dcsToCheck.value = newSet;
 });
 export function ConnectivityTest() {
-  const [alertVisible, setAlertVisible] = useState(false);
+  const alertVisible = useSignal(false);
   if (testInProgress.value) {
     return <TestView />;
   }
@@ -144,13 +143,13 @@ export function ConnectivityTest() {
 
       <div class="fixed bottom-5 right-5 opacity-50 select-none text-xs cursor-pointer">
         <button
-          class="p-0 focus:outline-none"
-          onClick={() => setAlertVisible(true)}
+          class="p-0 focus:outline-none hover:underline"
+          onClick={() => alertVisible.value = true}
         >
           How does this work?
         </button>
       </div>
-      <Alert visible={alertVisible} setVisible={setAlertVisible} />
+      <Alert present={alertVisible} />
     </>
   );
 }
