@@ -28,7 +28,7 @@ export default {
           marquee: "marquee 2s linear infinite",
           "spin-fast": "spin .5s linear infinite",
           "in-opacity": "inOpacity 100ms linear both",
-          "out-opacity": "out-op 100ms linear both",
+          "out-opacity": "outOpacity 100ms linear both",
           "in-scale": "inScale 100ms linear both",
           "out-scale": "outScale 100ms linear both",
         },
