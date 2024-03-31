@@ -1,5 +1,5 @@
 import { ComponentChildren } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useSignal, useSignalEffect } from "@preact/signals";
 
 import {
   deserializeFileId,
@@ -13,125 +13,127 @@ import { setHash } from "../lib/hash.ts";
 import { Input } from "../components/Input.tsx";
 
 export function FileIdAnalyzer() {
-  const [fileId, setFileId] = useState(
+  const fileId = useSignal(
     typeof location !== "undefined" ? location?.hash?.slice(1) ?? "" : "",
   );
-  const [data, setData] = useState<FileId | UniqueFileId | null>(null);
+  const data = useSignal<FileId | UniqueFileId | null>(null);
 
-  useEffect(() => {
-    if (!fileId.trim()) {
+  useSignalEffect(() => {
+    if (!fileId.value.trim()) {
       return;
     }
     if (typeof location !== "undefined") {
-      setHash(fileId);
+      setHash(fileId.value);
     }
     try {
-      setData(deserializeFileId(fileId));
+      data.value = deserializeFileId(fileId.value);
     } catch (err1) {
       try {
-        setData(deserializeUniqueFileId(fileId));
+        data.value = deserializeUniqueFileId(fileId.value);
       } catch (err2) {
         console.error("1", err1);
         console.error("2", err1);
-        setData(null);
+        data.value = null;
       }
     }
-  }, [fileId]);
+  });
 
   return (
     <div class="flex flex-col w-full px-5">
       <Input
         type="text"
-        value={fileId}
+        value={fileId.value}
         placeholder="File ID"
-        onKeyDown={(e) => setFileId(e.currentTarget.value)}
-        onKeyPress={(e) => setFileId(e.currentTarget.value)}
+        onKeyDown={(e) => fileId.value = e.currentTarget.value}
+        onKeyPress={(e) => fileId.value = e.currentTarget.value}
       />
       <div class="text-xs opacity-50 pl-2 mt-2">
         Enter a file ID to analyze. Both file IDs and unqiue file IDs are
         supported as provided by Bot API, TDLib, or any other source adhering to
         their format.
       </div>
-      {data && "unique" in data && data.unique && (
+      {data.value && "unique" in data.value && data.value.unique && (
         <div class="gap-5 grid grid-cols-2 mt-5">
-          <Kv k="Type" v={data.type} />
-          {data.url && <Kv k="URL" v={data.url} />}
-          {data.id && <Kv k="ID" v={String(data.id)} />}
+          <Kv k="Type" v={data.value.type} />
+          {data.value.url && <Kv k="URL" v={data.value.url} />}
+          {data.value.id && <Kv k="ID" v={String(data.value.id)} />}
         </div>
       )}
-      {data && !("unique" in data) && (
+      {data.value && !("unique" in data.value) && (
         <div class="grid grid-cols-2 gap-5 mt-5">
-          <Kv k="Type" v={fileTypeMap[data.type]} />
-          <Kv k="DC" v={data.dcId} />
-          {data.location.type == "web" && (
+          <Kv k="Type" v={fileTypeMap[data.value.type]} />
+          <Kv k="DC" v={data.value.dcId} />
+          {data.value.location.type == "web" && (
             <>
-              <Kv k="URL" v={data.location.url} c="col-span-2" />
+              <Kv k="URL" v={data.value.location.url} c="col-span-2" />
               <Kv
                 k="Access Hash"
-                v={String(data.location.accessHash)}
+                v={String(data.value.location.accessHash)}
                 c="col-span-2"
               />
             </>
           )}
-          {data.location.type == "common" && (
+          {data.value.location.type == "common" && (
             <>
-              <Kv k="ID" v={String(data.location.id)} />
-              <Kv k="Access Hash" v={String(data.location.accessHash)} />
+              <Kv k="ID" v={String(data.value.location.id)} />
+              <Kv k="Access Hash" v={String(data.value.location.accessHash)} />
             </>
           )}
-          {data.location.type == "photo" && (
+          {data.value.location.type == "photo" && (
             <>
-              <Kv k="ID" v={String(data.location.id)} />
-              <Kv k="Access Hash" v={String(data.location.accessHash)} />
-              {"chatId" in data.location.source &&
+              <Kv k="ID" v={String(data.value.location.id)} />
+              <Kv k="Access Hash" v={String(data.value.location.accessHash)} />
+              {"chatId" in data.value.location.source &&
                 (
                   <>
-                    <Kv k="Chat ID" v={data.location.source.chatId} />
+                    <Kv k="Chat ID" v={data.value.location.source.chatId} />
                     <Kv
                       k="Chat Access Hash"
-                      v={data.location.source.chatAccessHash}
+                      v={data.value.location.source.chatAccessHash}
                     />
                   </>
                 )}
-              {"thumbnailType" in data.location.source && (
+              {"thumbnailType" in data.value.location.source && (
                 <>
                   <Kv
                     k="Thumbnail File Type"
-                    v={fileTypeMap[data.location.source.fileType]}
+                    v={fileTypeMap[data.value.location.source.fileType]}
                   />
                   <Kv
                     k="Thumbnail Size"
-                    v={String.fromCharCode(data.location.source.thumbnailType)}
+                    v={String.fromCharCode(
+                      data.value.location.source.thumbnailType,
+                    )}
                   />
                 </>
               )}
-              {"stickerSetId" in data.location.source &&
+              {"stickerSetId" in data.value.location.source &&
                 (
                   <>
                     <Kv
                       k="Sticker Set ID"
-                      v={data.location.source.stickerSetId}
+                      v={data.value.location.source.stickerSetId}
                     />
                     <Kv
                       k="Sticker Set Access Hash"
-                      v={data.location.source.stickerSetAccessHash}
+                      v={data.value.location.source.stickerSetAccessHash}
                     />
                   </>
                 )}
-              {"volumeId" in data.location.source && (
+              {"volumeId" in data.value.location.source && (
                 <>
-                  <Kv k="Volume ID" v={data.location.source.volumeId} />
-                  <Kv k="Local ID" v={data.location.source.localId} />
+                  <Kv k="Volume ID" v={data.value.location.source.volumeId} />
+                  <Kv k="Local ID" v={data.value.location.source.localId} />
                 </>
               )}
             </>
           )}
-          {data.fileReference && (
+          {data.value.fileReference && (
             <Kv
               c="col-span-2"
               k="Reference"
               v={"0x" +
-                [...data.fileReference ?? new Uint8Array([0])].map((v) =>
+                [...data.value.fileReference ?? new Uint8Array([0])].map((v) =>
                   v.toString(16).padStart(2, "0")
                 ).join("").toUpperCase()}
             />

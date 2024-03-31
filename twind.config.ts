@@ -31,6 +31,8 @@ export default {
           "out-opacity": "outOpacity 100ms linear both",
           "in-scale": "inScale 100ms linear both",
           "out-scale": "outScale 100ms linear both",
+          "in-select": "inSelect 100ms linear both",
+          "out-select": "outSelect 100ms linear both",
         },
         keyframes: {
           marquee: {
@@ -52,6 +54,14 @@ export default {
           outScale: {
             from: { scale: 1 },
             to: { scale: 0.9 },
+          },
+          inSelect: {
+            from: { opacity: 0, transform: "translateY(-5px)" },
+            to: { opcaity: 1, transform: "translateY(0)" },
+          },
+          outSelect: {
+            from: { opcaity: 1, transform: "translateY(0)" },
+            to: { opacity: 0, transform: "translateY(-5px)" },
           },
         },
         boxShadow: {

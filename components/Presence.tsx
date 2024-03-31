@@ -1,7 +1,7 @@
 import { cloneElement, VNode } from "preact";
 import { Signal, useSignal, useSignalEffect } from "@preact/signals";
 
-export function Precense(
+export function Presence(
   { present, children }: {
     present: Signal<boolean>;
     // deno-lint-ignore no-explicit-any

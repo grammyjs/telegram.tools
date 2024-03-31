@@ -1,8 +1,9 @@
-import { useEffect, useState } from "preact/hooks";
+import { useSignal, useSignalEffect } from "@preact/signals";
 
 import { cn } from "../lib/cn.ts";
 
 import { Check } from "./icons/Check.tsx";
+import { Presence } from "./Presence.tsx";
 
 export function Select<T extends string>(
   { value, values, onChange, nameMap }: {
@@ -12,10 +13,10 @@ export function Select<T extends string>(
     nameMap?: Record<T, string>;
   },
 ) {
-  const [focused, setFocused] = useState(false);
-  const [active, setActive] = useState<T | null>(null);
+  const focused = useSignal(false);
+  const active = useSignal<T | null>(null);
 
-  useEffect(() => void (!focused && setActive(null)), [focused]);
+  useSignalEffect(() => void (!focused.value && (active.value = null)));
 
   return (
     <div
@@ -27,7 +28,7 @@ export function Select<T extends string>(
             return;
           }
         }
-        setFocused(false);
+        focused.value = false;
       }}
       onClick={(e) => {
         const value = e.target instanceof HTMLElement
@@ -35,51 +36,53 @@ export function Select<T extends string>(
           : null;
         if (value) {
           onChange(value as T);
-          setFocused(false);
+          focused.value = false;
         } else if (
           e.target == e.currentTarget ||
           (e.target instanceof HTMLElement &&
             e.target.getAttribute("data-x") != null)
         ) {
-          setFocused(!focused);
+          focused.value = !focused.value;
         }
       }}
       onKeyPress={(e) => {
-        if (e.key == "Enter" && focused) {
-          active != null && onChange(active);
-          setFocused(false);
+        if (e.key == "Enter" && focused.value) {
+          active.value != null && onChange(active.value);
+          focused.value = false;
         }
       }}
       onKeyDown={(e) => {
-        if (!focused) return;
+        if (!focused.value) return;
         switch (e.key) {
           case "ArrowUp": {
-            const prev = values.indexOf(active != null ? active : value) - 1;
+            const prev =
+              values.indexOf(active.value != null ? active.value : value) - 1;
             if (prev < 0) {
-              setActive(values[values.length - 1]);
+              active.value = values[values.length - 1];
             } else {
-              setActive(values[prev]);
+              active.value = values[prev];
             }
             break;
           }
           case "ArrowDown": {
-            const next = values.indexOf(active != null ? active : value) + 1;
+            const next =
+              values.indexOf(active.value != null ? active.value : value) + 1;
             if (next <= values.length - 1) {
-              setActive(values[next]);
+              active.value = values[next];
             } else {
-              setActive(values[0]);
+              active.value = values[0];
             }
             break;
           }
           case "Escape":
-            focused && setFocused(false);
+            focused.value && (focused.value = false);
         }
       }}
       tabIndex={0}
     >
       <div
-        class={`bg-foreground-transparent placeholder:(text-foreground opacity-[.55]) rounded-lg w-full px-3 py-1.5 focus:(outline-none) ${
-          focused ? "rounded-b-none" : "rounded-b-lg"
+        class={`bg-foreground-transparent placeholder:(text-foreground opacity-[.55]) rounded-lg w-full px-3 py-1.5 focus:(outline-none) duration-100 ${
+          focused.value ? "rounded-b-none" : "rounded-b-lg"
         }`}
         data-x
       >
@@ -96,31 +99,35 @@ export function Select<T extends string>(
           class="w-full h-full absolute bg-transparent hidden group-focus:block"
         />
       </div>
-      <div
-        class={`bg-background z-[100] absolute duration-100 top-[calc(100%+0rem)] w-full border border-border rounded-lg rounded-t-none px-1 py-1.5 shadow-slct ${
-          focused
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-[-5px] pointer-events-none"
-        }`}
-      >
-        {values.map((v) => (
-          <button
-            type="button"
-            tabIndex={-1}
-            class={cn(
-              "px-3 py-1.5 w-full rounded-lg focus:(bg-border outline-none) cursor-default text-left border-none flex items-center justify-between duration-75 transition-opacity",
-              active == v && "bg-border",
-            )}
-            onMouseEnter={(e) => {
-              setActive(e.currentTarget.getAttribute("data-value") as T | null);
-            }}
-            data-value={v}
-          >
-            <span data-value={v}>{nameMap?.[v] ?? v}</span>
-            {value == v && <Check />}
-          </button>
-        ))}
-      </div>
+      <Presence present={focused}>
+        <div
+          class={`bg-background z-[100] absolute top-[calc(100%+0rem)] w-full border border-border rounded-lg rounded-t-none px-1 py-1.5 shadow-slct ${
+            focused.value
+              ? "animate-in-select pointer-events-auto"
+              : "animate-out-select pointer-events-none"
+          }`}
+        >
+          {values.map((v) => (
+            <button
+              type="button"
+              tabIndex={-1}
+              class={cn(
+                "px-3 py-1.5 w-full rounded-lg focus:(bg-border outline-none) cursor-default text-left border-none flex items-center justify-between duration-75 transition-opacity",
+                active.value == v && "bg-border",
+              )}
+              onMouseEnter={(e) => {
+                active.value = e.currentTarget.getAttribute("data-value") as
+                  | T
+                  | null;
+              }}
+              data-value={v}
+            >
+              <span data-value={v}>{nameMap?.[v] ?? v}</span>
+              {value == v && <Check />}
+            </button>
+          ))}
+        </div>
+      </Presence>
     </div>
   );
 }

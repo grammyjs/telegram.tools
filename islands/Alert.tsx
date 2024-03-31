@@ -2,7 +2,7 @@ import { useEffect } from "preact/hooks";
 import { Signal } from "@preact/signals";
 
 import { Button } from "../components/Button.tsx";
-import { Precense } from "../components/Precense.tsx";
+import { Presence } from "../components/Presence.tsx";
 
 export function Alert(
   { present }: {
@@ -18,7 +18,7 @@ export function Alert(
   }, []);
 
   return (
-    <Precense present={present}>
+    <Presence present={present}>
       <div
         class={`w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] flex p-5 items-center justify-center duration-100 ${
           present.value
@@ -53,6 +53,6 @@ export function Alert(
           <Button onClick={() => present.value = false}>Dismiss</Button>
         </div>
       </div>
-    </Precense>
+    </Presence>
   );
 }

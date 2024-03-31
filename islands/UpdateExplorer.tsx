@@ -1,7 +1,12 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { createRef } from "preact";
-import { useEffect, useState } from "preact/hooks";
-import { signal, useComputed, useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
+import {
+  signal,
+  useComputed,
+  useSignal,
+  useSignalEffect,
+} from "@preact/signals";
 
 import Prism from "prismjs";
 import "prism-json";
@@ -125,33 +130,33 @@ function Explorer() {
   if (!token) {
     return null;
   }
-  const [filter, setFilter] = useState("");
-  const [filterValid, setFilterValid] = useState(false);
-  useEffect(() => {
-    if (!filter) {
-      setFilterValid(true);
+  const filter = useSignal("");
+  const filterValid = useSignal(false);
+  useSignalEffect(() => {
+    if (!filter.value) {
+      filterValid.value = true;
       return;
     }
     try {
       // @ts-ignore: yes, just like that
-      matchFilter(filter);
-      setFilterValid(true);
+      matchFilter(filter.value);
+      filterValid.value = true;
     } catch {
-      setFilterValid(false);
+      filterValid.value = false;
     }
-  }, [filter]);
+  });
   const me = useSignal<UserFromGetMe | null>(null);
   const updates = useLiveQuerySignal(
     () =>
       getDb(token).updates.reverse()
         .filter((v) =>
           // @ts-ignore: please
-          filter ? matchFilter(filter)({ update: v.data }) : true
+          filter.value ? matchFilter(filter.value)({ update: v.data }) : true
         )
         .offset(page * UPDATE_LIMIT).limit(
           UPDATE_LIMIT,
         ).toArray(),
-    [token, page, filter],
+    [token, page, filter.value],
     [],
   );
 
@@ -276,7 +281,7 @@ function Explorer() {
           {(!updates.value || !updates.value.length) &&
             (
               <div class="opacity-50 text-sm self-center">
-                {filter ? "No matches found." : "No update received yet."}
+                {filter.value ? "No matches found." : "No update received yet."}
               </div>
             )}
           <div class="flex flex-col w-full text-sm">
@@ -355,11 +360,11 @@ function Explorer() {
           ref={fqInput}
           type="text"
           placeholder="Filter query"
-          onKeyUp={(e) => setFilter(e.currentTarget.value)}
+          onKeyUp={(e) => filter.value = e.currentTarget.value}
           class={`absolute top-0 left-4 top-2 bg-transparent placeholder:text-white/50 focus:outline-none ${
-            filterValid ? "" : "text-red-500"
+            filterValid.value ? "" : "text-red-500"
           } w-fit-content ${
-            filter
+            filter.value
               ? ""
               : "opacity-0 pointer-events-none focus:(opacity-100 pointer-events-auto)"
           }`}

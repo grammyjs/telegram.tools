@@ -21,7 +21,6 @@ import * as $Alert from "./islands/Alert.tsx";
 import * as $Confirmation from "./islands/Confirmation.tsx";
 import * as $ConnectivityTest from "./islands/ConnectivityTest.tsx";
 import * as $CookieNotice from "./islands/CookieNotice.tsx";
-import * as $Dots from "./islands/Dots.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
 import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
@@ -56,7 +55,6 @@ const manifest = {
     "./islands/Confirmation.tsx": $Confirmation,
     "./islands/ConnectivityTest.tsx": $ConnectivityTest,
     "./islands/CookieNotice.tsx": $CookieNotice,
-    "./islands/Dots.tsx": $Dots,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
     "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,

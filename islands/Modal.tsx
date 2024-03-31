@@ -4,7 +4,7 @@ import { useEffect } from "preact/hooks";
 import { effect, signal } from "@preact/signals";
 
 import { Button } from "../components/Button.tsx";
-import { Precense } from "../components/Precense.tsx";
+import { Presence } from "../components/Presence.tsx";
 
 export type ModalContent = null | ComponentChildren | (() => ComponentChildren);
 
@@ -78,13 +78,19 @@ export function Modal({ onDismiss }: { onDismiss?: () => void }) {
     }
   }
   return (
-    <Precense present={present}>
+    <Presence present={present}>
       <div
-        class={`w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] p-5 flex items-center justify-center ${present.value ? 'animate-in-opacity' : 'animate-out-opacity'}`}
+        class={`w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] p-5 flex items-center justify-center ${
+          present.value ? "animate-in-opacity" : "animate-out-opacity"
+        }`}
         onClick={(e) =>
           e.target == e.currentTarget && autoDismiss.value && dismiss()}
       >
-        <div class={`w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm ${present.value ? 'animate-in-scale' : 'animate-out-scale'}`}>
+        <div
+          class={`w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm ${
+            present.value ? "animate-in-scale" : "animate-out-scale"
+          }`}
+        >
           <div class="flex flex-col gap-4">
             {typeof content.value === "string"
               ? (
@@ -105,6 +111,6 @@ export function Modal({ onDismiss }: { onDismiss?: () => void }) {
           </div>
         </div>
       </div>
-    </Precense>
+    </Presence>
   );
 }
