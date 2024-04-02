@@ -63,9 +63,9 @@ export function UpdateExplorer() {
 
 function Home() {
   return (
-    <main class="w-full max-w-lg mx-auto">
+    <main class="p-5">
       <form
-        class="gap-4 flex flex-col"
+        class="gap-4 flex flex-col w-full max-w-lg mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
           setHash(`/${new FormData(e.currentTarget).get("token")}`);
@@ -80,7 +80,6 @@ function Home() {
         </div>
         <Button>Open Update Explorer</Button>
       </form>
-      <div class=""></div>
     </main>
   );
 }
