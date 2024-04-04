@@ -10,6 +10,7 @@
   --button-background: #dbf7ff;
   --danger-background: #7e0b0b;
   --danger-foreground: #fff;
+  --shadow: #0001;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,5 +24,6 @@
     --border: #191919;
     --gradient: linear-gradient(120deg, var(--background) 45%, #191919);
     --button-background: #041920;
+    --shadow: #ffffff02;
   }
 }

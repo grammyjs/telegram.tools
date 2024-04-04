@@ -143,12 +143,13 @@ export default function Home() {
           {new Date().getFullYear()} grammyjs
         </span>
         <div class="flex gap-5 text-grammy flex-wrap">
-          <a href="/disclaimer">
+          <a href="/disclaimer" class="hover:underline">
             Disclaimer
           </a>
           <a
             href="https://github.com/grammyjs/telegram.tools"
             target="_blank"
+            class="hover:underline"
           >
             Source Code
           </a>

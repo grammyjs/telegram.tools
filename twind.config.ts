@@ -29,12 +29,45 @@ export default {
         animation: {
           marquee: "marquee 2s linear infinite",
           "spin-fast": "spin .5s linear infinite",
+          "in-opacity": "inOpacity 100ms linear both",
+          "out-opacity": "outOpacity 100ms linear both",
+          "in-scale": "inScale 100ms linear both",
+          "out-scale": "outScale 100ms linear both",
+          "in-select": "inSelect 100ms linear both",
+          "out-select": "outSelect 100ms linear both",
         },
         keyframes: {
           marquee: {
             "0%": { transform: "translateX(-200%)" },
             "100%": { transform: "translateX(200%)" },
           },
+          inOpacity: {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+          },
+          outOpacity: {
+            from: { opacity: 1 },
+            to: { opacity: 0 },
+          },
+          inScale: {
+            from: { scale: 0.9 },
+            to: { scale: 1 },
+          },
+          outScale: {
+            from: { scale: 1 },
+            to: { scale: 0.9 },
+          },
+          inSelect: {
+            from: { opacity: 0, transform: "translateY(-5px)" },
+            to: { opcaity: 1, transform: "translateY(0)" },
+          },
+          outSelect: {
+            from: { opcaity: 1, transform: "translateY(0)" },
+            to: { opacity: 0, transform: "translateY(-5px)" },
+          },
+        },
+        boxShadow: {
+          slct: "0px 10px 30px var(--shadow)",
         },
       },
     },

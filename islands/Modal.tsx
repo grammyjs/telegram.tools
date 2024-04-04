@@ -4,6 +4,7 @@ import { useEffect } from "preact/hooks";
 import { effect, signal } from "@preact/signals";
 
 import { Button } from "../components/Button.tsx";
+import { Presence } from "../components/Presence.tsx";
 
 export type ModalContent = null | ComponentChildren | (() => ComponentChildren);
 
@@ -26,8 +27,10 @@ IS_BROWSER && effect(() => {
   }
 });
 
+const present = signal(false);
+
 export function isModalVisible() {
-  return content.value != null;
+  return present.value;
 }
 
 export function setModalContent(
@@ -47,10 +50,11 @@ export function setModalContent(
     }
   }
   content.value = content_;
+  present.value = true;
 }
 
 export function hideModal() {
-  setModalContent(null);
+  present.value = false;
 }
 
 export function displayError(err: unknown, context?: string) {
@@ -61,47 +65,52 @@ export function displayError(err: unknown, context?: string) {
 export function Modal({ onDismiss }: { onDismiss?: () => void }) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      e.key == "Escape" && (content.value = null);
+      e.key == "Escape" && (hideModal());
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
-  if (!content.value) {
-    return null;
-  }
   function dismiss() {
     if (onDismiss) {
       onDismiss();
     } else {
-      content.value = null;
+      hideModal();
     }
   }
   return (
-    <div
-      class="w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] p-5 flex items-center justify-center"
-      onClick={(e) =>
-        e.target == e.currentTarget && autoDismiss.value && dismiss()}
-    >
-      <div class="w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm">
-        <div class="flex flex-col gap-4">
-          {typeof content.value === "string"
-            ? (
-              <p>
-                {content.value}
-              </p>
-            )
-            : typeof content.value === "function"
-            ? content.value()
-            : content.value}
-          {showDismissButton.value && (
-            <Button
-              onClick={dismiss}
-            >
-              Dismiss
-            </Button>
-          )}
+    <Presence present={present}>
+      <div
+        class={`w-full h-screen fixed top-0 left-0 bg-[#0005] dark:bg-[#fff1] p-5 flex items-center justify-center ${
+          present.value ? "animate-in-opacity" : "animate-out-opacity"
+        }`}
+        onClick={(e) =>
+          e.target == e.currentTarget && autoDismiss.value && dismiss()}
+      >
+        <div
+          class={`w-full max-w-lg p-5 bg-background rounded-xl flex flex-col gap-5 justify-between shadow-sm ${
+            present.value ? "animate-in-scale" : "animate-out-scale"
+          }`}
+        >
+          <div class="flex flex-col gap-4">
+            {typeof content.value === "string"
+              ? (
+                <p>
+                  {content.value}
+                </p>
+              )
+              : typeof content.value === "function"
+              ? content.value()
+              : content.value}
+            {showDismissButton.value && (
+              <Button
+                onClick={dismiss}
+              >
+                Dismiss
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Presence>
   );
 }

@@ -22,13 +22,11 @@ import * as $Alert from "./islands/Alert.tsx";
 import * as $Confirmation from "./islands/Confirmation.tsx";
 import * as $ConnectivityTest from "./islands/ConnectivityTest.tsx";
 import * as $CookieNotice from "./islands/CookieNotice.tsx";
-import * as $Dots from "./islands/Dots.tsx";
 import * as $FileIdAnalyzer from "./islands/FileIdAnalyzer.tsx";
 import * as $FilterQueryBrowser from "./islands/FilterQueryBrowser.tsx";
 import * as $InlineMessageIdUnpacker from "./islands/InlineMessageIdUnpacker.tsx";
 import * as $K from "./islands/K.tsx";
 import * as $Modal from "./islands/Modal.tsx";
-import * as $Select from "./islands/Select.tsx";
 import * as $SessionStringAnalyzer from "./islands/SessionStringAnalyzer.tsx";
 import * as $SessionStringConverter from "./islands/SessionStringConverter.tsx";
 import * as $SessionStringGenerator from "./islands/SessionStringGenerator.tsx";
@@ -60,13 +58,11 @@ const manifest = {
     "./islands/Confirmation.tsx": $Confirmation,
     "./islands/ConnectivityTest.tsx": $ConnectivityTest,
     "./islands/CookieNotice.tsx": $CookieNotice,
-    "./islands/Dots.tsx": $Dots,
     "./islands/FileIdAnalyzer.tsx": $FileIdAnalyzer,
     "./islands/FilterQueryBrowser.tsx": $FilterQueryBrowser,
     "./islands/InlineMessageIdUnpacker.tsx": $InlineMessageIdUnpacker,
     "./islands/K.tsx": $K,
     "./islands/Modal.tsx": $Modal,
-    "./islands/Select.tsx": $Select,
     "./islands/SessionStringAnalyzer.tsx": $SessionStringAnalyzer,
     "./islands/SessionStringConverter.tsx": $SessionStringConverter,
     "./islands/SessionStringGenerator.tsx": $SessionStringGenerator,
