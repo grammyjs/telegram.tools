@@ -34,12 +34,16 @@ async function handleMessage(
       const writer = new TLWriter();
       writer.writeString(initialDc);
       writer.writeBytes(authKey);
+      writer.writeInt32(0);
+      writer.write(new Uint8Array([0]));
+      writer.writeInt64(0n);
       authString = base64EncodeUrlSafe(rleEncode(writer.buffer));
     }
     postMessage(authKey);
     client = new Client(new StorageMemory(authString));
     await client.connect();
-  } catch (_err) {
+  } catch (err) {
+    console.error(err);
     postMessage("failed");
     postMessage("done");
     return;
@@ -55,6 +59,10 @@ async function handleMessage(
           i == 0 && !regenerateAuthKey && String(err).includes("was closed") // TODO: Use MTKruto's ConnectionError with instanceof
         ) {
           await handleMessage(data, true);
+          break;
+        } else {
+          console.error(err);
+          postMessage("failed");
           break;
         }
       }

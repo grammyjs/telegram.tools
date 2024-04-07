@@ -1,8 +1,9 @@
+import { unreachable } from "$std/assert/unreachable.ts";
+
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { computed, Signal, signal } from "@preact/signals";
 
 import { Client, StorageMemory, types } from "mtkruto/mod.ts";
-import { UNREACHABLE } from "mtkruto/1_utilities.ts";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 
 import { isValidLibrary, ValidLibrary } from "../lib/misc.ts";
@@ -416,7 +417,7 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
   const dc = await client.storage.getDc();
   const authKey = await client.storage.getAuthKey();
   if (!dc || !authKey) {
-    UNREACHABLE();
+    unreachable();
   }
 
   const ip = getDcIps(dc, "ipv4")[0]; // TODO

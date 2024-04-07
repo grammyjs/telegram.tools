@@ -1,4 +1,4 @@
-import { UNREACHABLE } from "mtkruto/utilities/0_control.ts";
+import { unreachable } from "$std/assert/unreachable.ts";
 import { rleDecode, rleEncode } from "mtkruto/utilities/0_rle.ts";
 import {
   base64DecodeUrlSafe,
@@ -217,7 +217,7 @@ function serializePhotoSource(photoSource: PhotoSource, writer: TLWriter) {
       writer.writeInt32(photoSource.version);
       break;
     default:
-      UNREACHABLE();
+      unreachable();
   }
 }
 function getPhotoSourceCompareType(source: PhotoSource) {
@@ -227,7 +227,7 @@ function getPhotoSourceCompareType(source: PhotoSource) {
     case PhotoSourceType.Thumbnail: {
       const type = source.thumbnailType;
       if (!(0 <= type && type <= 127)) {
-        UNREACHABLE();
+        unreachable();
       }
       if (type == "a".charCodeAt(0)) {
         return 0;
@@ -253,7 +253,7 @@ function getPhotoSourceCompareType(source: PhotoSource) {
     default:
       break;
   }
-  UNREACHABLE();
+  unreachable();
 }
 function writePhotoSourceUniqueId(photoSource: PhotoSource, writer: TLWriter) {
   const compareType = getPhotoSourceCompareType(photoSource);
@@ -270,14 +270,14 @@ function writePhotoSourceUniqueId(photoSource: PhotoSource, writer: TLWriter) {
       ? photoSource.volumeId
       : "stickerSetId" in photoSource
       ? photoSource.stickerSetId
-      : UNREACHABLE(),
+      : unreachable(),
   );
   writer.writeInt32(
     "localId" in photoSource
       ? photoSource.localId
       : "version" in photoSource
       ? photoSource.version
-      : UNREACHABLE(),
+      : unreachable(),
   );
 }
 
@@ -325,7 +325,7 @@ function getFileTypeClass(fileType: FileType) {
     case FileType.None:
     case FileType.Size:
     default:
-      UNREACHABLE();
+      unreachable();
   }
 }
 
@@ -423,7 +423,7 @@ export function toUniqueFileId(fileId: FileId): string {
     switch (fileId.location.source.type) {
       case PhotoSourceType.Legacy:
       case PhotoSourceType.StickerSetThumbnail:
-        UNREACHABLE();
+        unreachable();
         /* falls through */
       case PhotoSourceType.FullLegacy:
       case PhotoSourceType.ChatPhotoSmallLegacy:

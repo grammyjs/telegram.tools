@@ -2,7 +2,7 @@ import { ComponentChildren } from "preact";
 import { signal, useSignalEffect } from "@preact/signals";
 
 import { base64DecodeUrlSafe } from "mtkruto/utilities/1_base64.ts";
-import { TLReader } from "mtkruto/tl/3_tl_reader.ts";
+import { TLReader } from "mtkruto/tl/4_tl_reader.ts";
 import { id, types } from "mtkruto/2_tl.ts";
 
 import { getHashSignal } from "../lib/hash.ts";
