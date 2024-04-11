@@ -35,7 +35,9 @@
     "clsx": "https://esm.sh/clsx@2.1.0",
     "tailwind-merge": "https://esm.sh/tailwind-merge@2.2.1",
     "esbuild/": "https://deno.land/x/esbuild@v0.20.1/",
-    "esbuild_deno_loader/": "https://deno.land/x/esbuild_deno_loader@0.8.5/"
+    "esbuild_deno_loader/": "https://deno.land/x/esbuild_deno_loader@0.8.5/",
+    "ml-regression-polynomial": "https://esm.sh/ml-regression-polynomial@3.0.0",
+    "time_ago/": "https://deno.land/x/time_ago@v1/"
   },
   "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" }
 }
