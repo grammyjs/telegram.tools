@@ -21,7 +21,7 @@ export function CreationDate() {
   useSignalEffect(() => {
     const id = Number(getId());
     if (isNaN(id) || !id) {
-      data.value = null
+      data.value = null;
       return;
     }
 
@@ -31,7 +31,11 @@ export function CreationDate() {
   return (
     <div class="w-full mx-auto max-w-lg gap-5 flex flex-col items-center text-center">
       <div class={"flex flex-col gap-0.5 "}>
-        <div class={`font-bold text-xs ${id.length ? 'opacity-1' :'opacity-0'}`}>User ID</div>
+        <div
+          class={`font-bold text-xs ${id.length ? "opacity-1" : "opacity-0"}`}
+        >
+          User ID
+        </div>
         <input
           class="select-text text-ellipsis overflow-hidden focus:outline-none text-center bg-transparent placeholder:(text-foreground opacity-[.55]) text-lg"
           placeholder="Enter User ID"

@@ -23,18 +23,18 @@ const sections = [
         description:
           "See if you are able to reach Telegram\u2019s data centers.",
       },
-    ],
-  },
-  {
-    name: "Unlisted",
-    description: "Tools that don’t fit in a specific section yet.",
-    tools: [
       {
         href: "/creation-date",
         icon: <Clock />,
         name: "Creation Date",
         description: "Get approximate creation date of Telegram users.",
       },
+    ],
+  },
+  {
+    name: "Unlisted",
+    description: "Tools that don’t fit in a specific section yet.",
+    tools: [
     ],
   },
   {
@@ -131,23 +131,24 @@ export default function Home() {
     <>
       <div class="flex flex-col w-full gap-10">
         {sections.map((v) => (
-          <div class="flex flex-col gap-5">
-            <div class="flex flex-col gap-1.5">
+
+          /* // <div class="flex flex-col gap-5">
+            {/* <div class="flex flex-col gap-1.5">
               <div class="text-2xl font-bold">{v.name}</div>
               {v.description && <div>{v.description}</div>}
-            </div>
-            <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {v.tools.map((v) => (
-                <Card
-                  href={v.href}
-                  title={v.name}
-                  description={v.description}
-                  icon={v.icon}
-                  disabled={"disabled" in v && v.disabled === false}
-                />
-              ))}
-            </div>
+            </div> */
+          <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {v.tools.map((v) => (
+              <Card
+                href={v.href}
+                title={v.name}
+                description={v.description}
+                icon={v.icon}
+                disabled={"disabled" in v && v.disabled === false}
+              />
+            ))}
           </div>
+          // </div>
         ))}
       </div>
       <footer class="text-xs py-10 flex gap-10 items-center justify-between flex-wrap flex-wrap-reverse border-t border-border mt-10">
