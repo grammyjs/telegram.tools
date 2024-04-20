@@ -4,9 +4,6 @@ import { signal, useSignalEffect } from "@preact/signals";
 import { getHashSignal } from "../lib/hash.ts";
 import { setHash } from "../lib/hash.ts";
 
-import { Caption } from "../components/Caption.tsx";
-import { Input } from "../components/Input.tsx";
-import { Label } from "../components/Label.tsx";
 import { timeAgo } from "time_ago/mod.ts";
 import { predictCreationDate } from "../lib/creation_date.ts";
 

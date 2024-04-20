@@ -13,8 +13,6 @@ import { ExternalLink } from "../components/ExternalLink.tsx";
 
 const sections = [
   {
-    name: "Connectivity",
-    description: "Tools to test your connectivity.",
     tools: [
       {
         href: "/connectivity-test",
@@ -32,21 +30,6 @@ const sections = [
     ],
   },
   {
-    name: "Unlisted",
-    description: "Tools that don’t fit in a specific section yet.",
-    tools: [
-    ],
-  },
-  {
-    name: "Bot API",
-    description: (
-      <>
-        <ExternalLink href="https://core.telegram.org/bots/api">
-          Bot API
-        </ExternalLink>{" "}
-        is an official API for building Telegram bots.
-      </>
-    ),
     tools: [
       {
         href: "/file-id-analyzer",
@@ -79,11 +62,6 @@ const sections = [
     ],
   },
   {
-    name: "Session Strings",
-    description:
-      "Session strings are a piece of text generated or consumed by a \
-    third-party client library that include the necessary information to \
-    authorize as an account.",
     tools: [
       {
         href: "/session-string-generator",
@@ -107,14 +85,6 @@ const sections = [
     ],
   },
   {
-    name: "grammY",
-    description: (
-      <>
-        <ExternalLink href="https://grammy.dev">grammY</ExternalLink>{" "}
-        is a Bot API framework for TypeScript and JavaScript that can run almost
-        anywhere JavaScript does.
-      </>
-    ),
     tools: [
       {
         href: "/filter-query-browser",
@@ -129,14 +99,8 @@ const sections = [
 export default function Home() {
   return (
     <>
-      <div class="flex flex-col w-full gap-10">
+      <div class="flex flex-col w-full gap-10 pt-2 xl:pt-5">
         {sections.map((v) => (
-
-          /* // <div class="flex flex-col gap-5">
-            {/* <div class="flex flex-col gap-1.5">
-              <div class="text-2xl font-bold">{v.name}</div>
-              {v.description && <div>{v.description}</div>}
-            </div> */
           <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {v.tools.map((v) => (
               <Card
@@ -148,7 +112,6 @@ export default function Home() {
               />
             ))}
           </div>
-          // </div>
         ))}
       </div>
       <footer class="text-xs py-10 flex gap-10 items-center justify-between flex-wrap flex-wrap-reverse border-t border-border mt-10">
