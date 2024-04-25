@@ -42,6 +42,7 @@ export function predictCreationDate(id: number) {
   if (r <= 0) return now();
   const d = new Date(r * 1_000);
   if (isNaN(d.getHours())) return now();
+  if (d.getFullYear() < 2013) return now();
   return d;
 }
 function now() {
