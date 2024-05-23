@@ -28,8 +28,7 @@ async function handleMessage(
       postMessage("exchanging-encryption-keys");
       authKey = await getAuthKey(initialDc);
     }
-    /** @type string */
-    let authString;
+    let authString: string;
     {
       const writer = new TLWriter();
       writer.writeString(initialDc);
@@ -40,7 +39,8 @@ async function handleMessage(
       authString = base64EncodeUrlSafe(rleEncode(writer.buffer));
     }
     postMessage(authKey);
-    client = new Client(new StorageMemory(authString));
+    client = new Client({ storage: new StorageMemory() });
+    await client.importAuthString(authString);
     await client.connect();
   } catch (err) {
     console.error(err);
@@ -53,7 +53,7 @@ async function handleMessage(
     for (let i = 0; i < 10; i++) {
       const then = now();
       try {
-        await client.api.ping({ ping_id: getRandomId() });
+        await client.invoke({ _: "ping", ping_id: getRandomId() });
       } catch (err) {
         if (
           i == 0 && !regenerateAuthKey && String(err).includes("was closed") // TODO: Use MTKruto's ConnectionError with instanceof
