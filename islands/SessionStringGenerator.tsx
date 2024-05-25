@@ -466,6 +466,8 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
     account: account_,
     string: { apiId: apiId_, ip, dcId, testMode, me, authKey },
   });
+
+  await client.disconnect();
 }
 
 function Code(
