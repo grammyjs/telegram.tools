@@ -3,7 +3,7 @@ import { unreachable } from "$std/assert/unreachable.ts";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { computed, Signal, signal } from "@preact/signals";
 
-import { Client, StorageMemory, types } from "mtkruto/mod.ts";
+import { Client, errors, StorageMemory } from "mtkruto/mod.ts";
 import { getDcIps } from "mtkruto/transport/2_transport_provider.ts";
 
 import { isValidLibrary, ValidLibrary } from "../lib/misc.ts";
@@ -191,8 +191,8 @@ export function SessionStringGenerator() {
         onSubmit={(e) => {
           e.preventDefault();
           generate(library).catch((e) => {
-            if (e instanceof types.Rpc_error) {
-              displayError(e.error_message);
+            if (e instanceof errors.TelegramError) {
+              displayError(e.errorMessage);
             } else {
               displayError(e);
             }
@@ -351,7 +351,10 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
     return;
   }
 
-  const client = new Client(new StorageMemory(), apiId_, apiHash_, {
+  const client = new Client({
+    storage: new StorageMemory(),
+    apiId: apiId_,
+    apiHash: apiHash_,
     deviceModel: navigator.userAgent.trim().split(" ")[0] || "Unknown",
     initialDc: environment.value == "Test" ? "2-test" : undefined,
   });
@@ -361,7 +364,7 @@ async function generateSessionString(library: ValidLibrary) { // TODO: report er
   let firstPasswordAttempt_ = true;
   const firstPasswordAttempt = signal(true);
   await client.start(
-    accountType.value == "Bot" ? account_ : {
+    accountType.value == "Bot" ? { botToken: account_ } : {
       phone: account_,
       code: () =>
         new Promise((resolve, reject) => {

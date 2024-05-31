@@ -2,8 +2,6 @@ import { encodeHex } from "$std/encoding/hex.ts";
 import { ComponentChildren } from "preact";
 import { signal, useSignalEffect } from "@preact/signals";
 
-import { id, types } from "mtkruto/2_tl.ts";
-
 import { Caption } from "../components/Caption.tsx";
 import { Input } from "../components/Input.tsx";
 import { Label } from "../components/Label.tsx";
@@ -106,18 +104,6 @@ export function SessionStringAnalyzer() {
     </div>
   );
 }
-
-const inputBotInlineMessageID_CTR = new types.InputBotInlineMessageID({
-  dc_id: 0,
-  id: 0n,
-  access_hash: 0n,
-})[id];
-const inputBotInlineMessageID64_CTR = new types.InputBotInlineMessageID64({
-  dc_id: 0,
-  owner_id: 0n,
-  id: 0,
-  access_hash: 0n,
-})[id];
 
 function Kv({ k, v, c }: { k: string; v: ComponentChildren; c?: string }) { // TODO: merge with FileIdAnalyzer's
   return (
