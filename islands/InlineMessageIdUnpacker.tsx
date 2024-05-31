@@ -2,8 +2,8 @@ import { ComponentChildren } from "preact";
 import { signal, useSignalEffect } from "@preact/signals";
 
 import { base64DecodeUrlSafe } from "mtkruto/utilities/1_base64.ts";
-import { TLReader } from "mtkruto/tl/4_tl_reader.ts";
-import { id, types } from "mtkruto/2_tl.ts";
+import { is, TLReader } from "mtkruto/mod.ts";
+import { getType } from "mtkruto/tl/0_api.ts";
 
 import { getHashSignal } from "../lib/hash.ts";
 import { setHash } from "../lib/hash.ts";
@@ -42,13 +42,13 @@ export function InlineMessageIdUnpacker() {
         : inputBotInlineMessageID64_CTR;
 
       const object = reader.readObject(cid);
-      if (object instanceof types.InputBotInlineMessageID) {
+      if (is("inputBotInlineMessageID", object)) {
         data.value = {
           dc: object.dc_id.toString(),
           id: object.id.toString(),
           accessHash: object.access_hash.toString(),
         };
-      } else if (object instanceof types.InputBotInlineMessageID64) {
+      } else if (is("inputBotInlineMessageID64", object)) {
         data.value = {
           dc: object.dc_id.toString(),
           userId: object.owner_id.toString(),
@@ -84,17 +84,8 @@ export function InlineMessageIdUnpacker() {
   );
 }
 
-const inputBotInlineMessageID_CTR = new types.InputBotInlineMessageID({
-  dc_id: 0,
-  id: 0n,
-  access_hash: 0n,
-})[id];
-const inputBotInlineMessageID64_CTR = new types.InputBotInlineMessageID64({
-  dc_id: 0,
-  owner_id: 0n,
-  id: 0,
-  access_hash: 0n,
-})[id];
+const inputBotInlineMessageID_CTR = getType("inputBotInlineMessageID")![0];
+const inputBotInlineMessageID64_CTR = getType("inputBotInlineMessageID64")![0];
 
 function Kv({ k, v, c }: { k: string; v: ComponentChildren; c?: string }) { // TODO: merge with FileIdAnalyzer's
   return (
