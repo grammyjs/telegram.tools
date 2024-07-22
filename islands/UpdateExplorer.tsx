@@ -1,4 +1,3 @@
-import { IS_BROWSER } from "$fresh/runtime.ts";
 import { createRef } from "preact";
 import { useEffect } from "preact/hooks";
 import {
@@ -35,28 +34,20 @@ function getDb(token: string) {
 }
 const UPDATE_LIMIT = 200;
 
-const width = signal(IS_BROWSER ? innerWidth : 0);
 const sounds = storedBoolean(false, "update-explorer_sounds");
-
-IS_BROWSER && addEventListener("resize", () => {
-  width.value = innerWidth;
-});
 
 export function UpdateExplorer() {
   return (
     <ClientOnly>
-      {() =>
-        width.value < 1280
-          ? <div class="p-5 text-xs opacity-50">Screen size not supported.</div>
-          : (
-            <Router
-              key={location.hash}
-              routes={{
-                "#": <Home />,
-              }}
-              fallbackRoute={<Explorer />}
-            />
-          )}
+      {() => (
+        <Router
+          key={location.hash}
+          routes={{
+            "#": <Home />,
+          }}
+          fallbackRoute={<Explorer />}
+        />
+      )}
     </ClientOnly>
   );
 }
@@ -275,8 +266,8 @@ function Explorer() {
 
   return (
     <>
-      <main class="grid grid-cols-2 w-full min-h-[900px]">
-        <div class="flex flex-col gap-4 w-full min-h-[90vh] p-4 h-[calc(100vh-32px)] overflow-y-auto">
+      <main class="grid md:grid-cols-2 grid-cols-1 w-full min-h-[500px]">
+        <div class="flex flex-col gap-4 w-full md:min-h-[90vh] p-4 md:h-[calc(100vh-32px)] h-[calc(50vh)] overflow-y-auto">
           {(!updates.value || !updates.value.length) &&
             (
               <div class="opacity-50 text-sm self-center">
@@ -321,7 +312,7 @@ function Explorer() {
           </div>
         </div>
         <div
-          class={`flex flex-col w-full p-4 h-[calc(100vh-32px)] overflow-y-auto ${
+          class={`flex flex-col w-full p-4 md:h-[calc(100vh-32px)] h-[calc(50vh-32px)] overflow-y-auto ${
             openedUpdate.value == null ? "items-center justify-center" : ""
           }`}
         >
