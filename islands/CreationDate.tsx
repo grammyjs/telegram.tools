@@ -10,7 +10,7 @@ import { predictCreationDate } from "../lib/creation_date.ts";
 const hash = getHashSignal();
 const getId = () => decodeURIComponent(hash.value.slice(1));
 
-const data = signal<Date | null>(null);
+const data = signal<[string, Date] | null>(null);
 
 export function CreationDate() {
   const id = getId();
@@ -45,11 +45,14 @@ export function CreationDate() {
         <div class="flex flex-col">
           <Kv
             k="Creation Date"
-            v={`${data.value.toDateString()} (${timeAgo(data.value)})`}
+            v={`${
+              data.value[0] == ">"
+                ? "After "
+                : data.value[0] == "<"
+                ? "Before "
+                : "Approximately "
+            }${data.value[1].toDateString()} (${timeAgo(data.value[1])})`}
           />
-          <div class="opacity-50 text-xs pt-0.5">
-            Note: This is an estimate.
-          </div>
         </div>
       )}
     </div>
