@@ -12,6 +12,7 @@ export const UPDATE_KEYS = [
   "callback_query",
   "shipping_query",
   "pre_checkout_query",
+  "purchased_paid_media",
   "poll",
   "poll_answer",
   "my_chat_member",
