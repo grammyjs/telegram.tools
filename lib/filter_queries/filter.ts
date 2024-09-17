@@ -21,6 +21,7 @@ export const UPDATE_KEYS = [
   "message_reaction_count",
   "chat_boost",
   "removed_chat_boost",
+  "purchased_paid_media",
 ];
 
 export const L1_SHORTCUTS = {
