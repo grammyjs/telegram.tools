@@ -12,7 +12,6 @@ export const UPDATE_KEYS = [
   "callback_query",
   "shipping_query",
   "pre_checkout_query",
-  "purchased_paid_media",
   "poll",
   "poll_answer",
   "my_chat_member",
@@ -22,6 +21,7 @@ export const UPDATE_KEYS = [
   "message_reaction_count",
   "chat_boost",
   "removed_chat_boost",
+  "purchased_paid_media",
 ];
 
 export const L1_SHORTCUTS = {
