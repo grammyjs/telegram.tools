@@ -27,6 +27,7 @@
     "$std/": "https://deno.land/std@0.224.0/",
     "mtkruto/": "https://deno.land/x/mtkruto@0.2.5/",
     "grammy/": "https://deno.land/x/grammy@v1.23.0/",
+    "https://cdn.skypack.dev/debug@4.3.4": "https://esm.sh/debug@4.3.4",
     "dexie": "https://esm.sh/dexie@3.2.6",
     "dexie-react-hooks": "https://esm.sh/dexie-react-hooks@1.1.7?alias=react:preact/compat",
     "prism-json": "https://esm.sh/prismjs@1.29.0/components/prism-json?no-check",
