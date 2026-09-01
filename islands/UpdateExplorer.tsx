@@ -1,4 +1,3 @@
-import { IS_BROWSER } from "$fresh/runtime.ts";
 import { createRef } from "preact";
 import { useEffect } from "preact/hooks";
 import {
@@ -27,6 +26,7 @@ import { ClientOnly } from "../components/ClientOnly.tsx";
 
 import { Modal, setModalContent } from "./Modal.tsx";
 import { isModalVisible } from "./Modal.tsx";
+import { Filter } from "../components/icons/Filter.tsx";
 
 const dbs = new Map<string, Db>();
 
@@ -35,28 +35,20 @@ function getDb(token: string) {
 }
 const UPDATE_LIMIT = 200;
 
-const width = signal(IS_BROWSER ? innerWidth : 0);
 const sounds = storedBoolean(false, "update-explorer_sounds");
-
-IS_BROWSER && addEventListener("resize", () => {
-  width.value = innerWidth;
-});
 
 export function UpdateExplorer() {
   return (
     <ClientOnly>
-      {() =>
-        width.value < 1280
-          ? <div class="p-5 text-xs opacity-50">Screen size not supported.</div>
-          : (
-            <Router
-              key={location.hash}
-              routes={{
-                "#": <Home />,
-              }}
-              fallbackRoute={<Explorer />}
-            />
-          )}
+      {() => (
+        <Router
+          key={location.hash}
+          routes={{
+            "#": <Home />,
+          }}
+          fallbackRoute={<Explorer />}
+        />
+      )}
     </ClientOnly>
   );
 }
@@ -87,6 +79,10 @@ function Home() {
 const openedUpdate = signal<{ id: number; text: string } | null>(null);
 
 async function openUpdate(token: string, updateId: number) {
+  if (openedUpdate?.value?.id === updateId) {
+    openedUpdate.value = null;
+    return;
+  }
   const update = await getDb(token).updates.where({ updateId }).first();
   if (!update) {
     return;
@@ -275,8 +271,8 @@ function Explorer() {
 
   return (
     <>
-      <main class="grid grid-cols-2 w-full min-h-[900px]">
-        <div class="flex flex-col gap-4 w-full min-h-[90vh] p-4 h-[calc(100vh-32px)] overflow-y-auto">
+      <main class="grid md:grid-cols-2 grid-cols-1 w-full min-h-[500px]">
+        <div class="flex flex-col gap-4 w-full md:min-h-[90vh] p-4 md:h-[calc(100vh-32px)] h-[calc(50vh)] overflow-y-auto">
           {(!updates.value || !updates.value.length) &&
             (
               <div class="opacity-50 text-sm self-center">
@@ -321,33 +317,45 @@ function Explorer() {
           </div>
         </div>
         <div
-          class={`flex flex-col w-full p-4 h-[calc(100vh-32px)] overflow-y-auto ${
+          class={`flex flex-col w-full p-4 md:h-[calc(100vh-32px)] h-[calc(50vh-32px)] overflow-y-auto ${
             openedUpdate.value == null ? "items-center justify-center" : ""
           }`}
         >
           {openedUpdate.value == null && (
-            <div class="flex flex-col gap-2 opacity-50 text-sm">
-              {[
-                ["/", "Filter"],
-                ["s", sounds.value ? "Turn sounds off" : "Turn sounds on"],
-                ["Esc", "Back"],
-                ["↑", "Jump to update above"],
-                ["↓", "Jump to update below"],
-                updates.value.length == UPDATE_LIMIT &&
-                ["→", "Next page"],
-                page != 0 &&
-                ["←", page == 0 ? "Browse older updates" : "Previous page"],
-              ]
-                .filter((v): v is [string, string] => !!v)
-                .map(([k, v]) => (
-                  <div class="flex gap-1.5 items-center">
-                    <div class="text-xs bg-border px-2 py-1 rounded-lg text-center w-[40px]">
-                      {k}
+            <>
+              <div class="flex flex-col gap-2 opacity-50 text-sm hidden md:block">
+                {[
+                  ["/", "Filter"],
+                  ["s", sounds.value ? "Turn sounds off" : "Turn sounds on"],
+                  ["Esc", "Back"],
+                  ["↑", "Jump to update above"],
+                  ["↓", "Jump to update below"],
+                  updates.value.length == UPDATE_LIMIT &&
+                  ["→", "Next page"],
+                  page != 0 &&
+                  ["←", page == 0 ? "Browse older updates" : "Previous page"],
+                ]
+                  .filter((v): v is [string, string] => !!v)
+                  .map(([k, v]) => (
+                    <div class="flex gap-1.5 items-center">
+                      <div class="text-xs bg-border px-2 py-1 rounded-lg text-center w-[40px]">
+                        {k}
+                      </div>
+                      <div>{v}</div>
                     </div>
-                    <div>{v}</div>
-                  </div>
-                ))}
-            </div>
+                  ))}
+              </div>
+              <div class="flex flex-col gap-2 opacity-50 text-sm md:hidden text-center">
+                <p>Tap one of the updates to inspect it.</p>
+                <p>Tap again to close it.</p>
+                <div class="mt-2">
+                  <Button onClick={() => fqInput.current?.focus()}>
+                    Apply Filter Query
+                    <Filter />
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
           {openedUpdate.value != null && (
             <pre class="text-sm select-text w-full"><code class="language-json" dangerouslySetInnerHTML={{__html: openedUpdate.value.text}}/></pre>
